@@ -1,6 +1,8 @@
-﻿namespace DeerJson
+﻿using System;
+
+namespace DeerJson
 {
-    public class Token
+    public class Token : IEquatable<Token>
     {
         public Token(TokenType tokenType, string value = "")
         {
@@ -11,10 +13,10 @@
         public TokenType TokenType { get; }
         public string Value { get; }
 
-        public override bool Equals(object obj)
+        public bool Equals(Token other)
         {
-            if (obj is Token t) return TokenType == t.TokenType && Value == t.Value;
-            return false;
+            if (other is null) return false;
+            return TokenType == other.TokenType && Value == other.Value;
         }
 
         public override int GetHashCode()

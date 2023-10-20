@@ -1,4 +1,4 @@
-﻿namespace DeerJson.AST
+﻿namespace DeerJson.Node
 {
     public abstract class JsonNode
     {

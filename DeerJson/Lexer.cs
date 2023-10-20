@@ -1,4 +1,5 @@
 ﻿using System;
+using DeerJson.Util;
 
 namespace DeerJson
 {
@@ -8,9 +9,8 @@ namespace DeerJson
         private char?  m_nowChar;
         private int    m_nowIndex = -1;
 
-        public Lexer()
-        {
-        }
+        public int CurLine { get; private set; } = 1;
+
 
         public Lexer(string inputStr)
         {
@@ -31,7 +31,7 @@ namespace DeerJson
             if (m_nowChar == null) return new Token(TokenType.EOF);
             SkipWhitespace();
 
-            if (Util.IsNumber(m_nowChar) || m_nowChar == '-') return ScanNumber();
+            if (TypeUtil.IsNumber(m_nowChar) || m_nowChar == '-') return ScanNumber();
             switch (m_nowChar)
             {
                 case 't': return ScanKeyword("true", TokenType.TRUE);
@@ -62,14 +62,15 @@ namespace DeerJson
             throw new Exception($"lexer: unresolved symbol '{m_nowChar}'");
         }
 
+
         private Token ScanNumber()
         {
             var start = m_nowIndex;
-            while (Util.IsNumber(m_nowChar)) MoveNext();
+            while (TypeUtil.IsNumber(m_nowChar)) MoveNext();
             if (m_nowChar == '.')
             {
                 MoveNext();
-                while (Util.IsNumber(m_nowChar)) MoveNext();
+                while (TypeUtil.IsNumber(m_nowChar)) MoveNext();
             }
 
             if (m_nowChar == 'e' || m_nowChar == 'E')
@@ -78,11 +79,11 @@ namespace DeerJson
                 if (m_nowChar == '+' || m_nowChar == '-')
                 {
                     MoveNext();
-                    while (Util.IsNumber(m_nowChar)) MoveNext();
+                    while (TypeUtil.IsNumber(m_nowChar)) MoveNext();
                 }
-                else if (Util.IsNumber(m_nowChar))
+                else if (TypeUtil.IsNumber(m_nowChar))
                 {
-                    while (Util.IsNumber(m_nowChar)) MoveNext();
+                    while (TypeUtil.IsNumber(m_nowChar)) MoveNext();
                 }
                 else
                 {
@@ -158,7 +159,14 @@ namespace DeerJson
 
         private void SkipWhitespace()
         {
-            while (m_nowChar == '\t' || m_nowChar == '\r' || m_nowChar == '\n' || m_nowChar == ' ') MoveNext();
+            while (m_nowChar == '\t' || m_nowChar == '\r' || m_nowChar == '\n' || m_nowChar == ' ')
+            {
+                if (m_nowChar == '\n') CurLine++;
+
+                MoveNext();
+            }
+
+            ;
         }
     }
 }

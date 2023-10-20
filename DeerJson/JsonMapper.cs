@@ -1,32 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using DeerJson.AST;
+using DeerJson.Node;
 using DeerJson.Deserializer;
+using DeerJson.Deserializer.std;
 
 namespace DeerJson
 {
     public class JsonMapper
     {
-        private Dictionary<Type, JsonDeserializer<object>> m_deserializerMap =
-            new Dictionary<Type, JsonDeserializer<object>>();
+        private readonly DeserializeContext m_deserializeContext = new DeserializeContext();
+
+        public JsonMapper()
+        {
+        }
+
 
         public T ParseJson<T>(string json)
         {
             return (T)ParseJson(typeof(T), json);
         }
 
-        public object ParseJson(Type type, string json)
+        private object ParseJson(Type type, string json)
         {
-            var obj = Activator.CreateInstance(type);
-            var parser = new JsonParser(json);
-            // Todo
-            return null;
+            var desc = m_deserializeContext.FindDeseializer(type);
+            var p = new JsonParser(json);
+            return ReadValue(p, desc);
         }
 
         public JsonNode ParseToTree(string json)
         {
-            var parser = new JsonParser(json);
-            return parser.Parse(json);
+            return ParseJson<JsonNode>(json);
+        }
+
+        public string ToJson<T>(T value)
+        {
+            return "";
+        }
+
+        private object ReadValue(JsonParser p, IDeserializer dese)
+        {
+            return dese.Deserialize(p);
         }
     }
 }
