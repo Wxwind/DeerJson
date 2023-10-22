@@ -1,0 +1,28 @@
+﻿using System;
+
+namespace DeerJson.Deserializer.std.Primitive
+{
+    public class Int16Deserializer : JsonDeserializer<short>
+    {
+        public static readonly Int16Deserializer Instance = new Int16Deserializer();
+
+        public override short Deserialize(JsonParser p)
+        {
+            var v = p.GetNumber();
+            var num = Convert.ToInt16(v);
+            return num;
+        }
+    }
+
+    public class UInt16Deserializer : JsonDeserializer<ushort>
+    {
+        public static readonly UInt16Deserializer Instance = new UInt16Deserializer();
+
+        public override ushort Deserialize(JsonParser p)
+        {
+            var v = p.GetNumber();
+            var num = Convert.ToUInt16(v);
+            return num;
+        }
+    }
+}

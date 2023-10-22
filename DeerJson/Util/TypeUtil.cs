@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace DeerJson.Util
 {
@@ -11,13 +12,13 @@ namespace DeerJson.Util
             return a >= '0' && a <= '9';
         }
 
-        public static bool IsAutoProperty(PropertyInfo property)
+        public static bool IsAutoProperty(PropertyInfo pi)
         {
             // auto props must have a setter and a getter;
-            if (!property.CanRead || !property.CanWrite) return false;
+            if (!pi.CanRead || !pi.CanWrite) return false;
 
-            var getter = property.GetGetMethod(false);
-            var setter = property.GetGetMethod(false);
+            var getter = pi.GetGetMethod(false);
+            var setter = pi.GetGetMethod(false);
 
             if (getter != null && setter != null)
             {
@@ -28,14 +29,20 @@ namespace DeerJson.Util
             }
 
             // is private auto prop?
-            var backingField = GetBackingField(property);
+            var backingField = GetBackingField(pi);
             return backingField != null && backingField.IsDefined(typeof(CompilerGeneratedAttribute), false);
         }
 
-        private static FieldInfo GetBackingField(PropertyInfo property)
+        public static bool IsAutoPropertyBackingField(FieldInfo fi)
         {
-            var backingFieldName = $"<{property.Name}>k__BackingField";
-            return property.DeclaringType?.GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+            var name = fi.Name;
+            return Regex.IsMatch(name, "^<.*>k__BackingField$");
+        }
+
+        private static FieldInfo GetBackingField(PropertyInfo pi)
+        {
+            var backingFieldName = $"<{pi.Name}>k__BackingField";
+            return pi.DeclaringType?.GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
                 .FirstOrDefault(field => field.Name == backingFieldName);
         }
     }

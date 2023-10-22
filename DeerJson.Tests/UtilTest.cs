@@ -28,6 +28,12 @@ public class UtilTest
         public static void MStatic1()
         {
         }
+
+        public object this[int index]
+        {
+            get => 123;
+            set { }
+        }
     }
 
     [Test]
@@ -41,12 +47,6 @@ public class UtilTest
             {
                 res.Add(pi.Name);
             }
-        }
-
-        Console.WriteLine(res.Count);
-        foreach (var item in res)
-        {
-            Console.WriteLine(item + ",");
         }
 
         var expected = new HashSet<string> { "PublicAutoStu", "PrivateAutoStu" };

@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using DeerJson.Node;
 using DeerJson.Deserializer;
 using DeerJson.Deserializer.std;
+using DeerJson.Node;
 
 namespace DeerJson
 {
@@ -22,7 +21,7 @@ namespace DeerJson
 
         private object ParseJson(Type type, string json)
         {
-            var desc = m_deserializeContext.FindDeseializer(type);
+            var desc = m_deserializeContext.FindDeserializer(type);
             var p = new JsonParser(json);
             return ReadValue(p, desc);
         }

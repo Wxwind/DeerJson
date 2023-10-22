@@ -1,0 +1,28 @@
+﻿using System;
+
+namespace DeerJson.Deserializer.std.Primitive
+{
+    public class ByteDeserializer : JsonDeserializer<byte>
+    {
+        public static readonly ByteDeserializer Instance = new ByteDeserializer();
+
+        public override byte Deserialize(JsonParser p)
+        {
+            var v = p.GetNumber();
+            var num = Convert.ToByte(v);
+            return num;
+        }
+    }
+
+    public class SByteDeserializer : JsonDeserializer<sbyte>
+    {
+        public static readonly SByteDeserializer Instance = new SByteDeserializer();
+
+        public override sbyte Deserialize(JsonParser p)
+        {
+            var v = p.GetNumber();
+            var num = Convert.ToSByte(v);
+            return num;
+        }
+    }
+}

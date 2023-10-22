@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using DeerJson.Node;
-
-namespace DeerJson
+﻿namespace DeerJson
 {
     public class JsonParser
     {
@@ -29,23 +25,56 @@ namespace DeerJson
         {
             if (m_curToken.TokenType == type)
             {
+                var token = m_curToken;
                 m_curToken = m_lexer.GetNextToken();
-                return m_curToken;
+                return token;
             }
 
             ReportDetailError($"syntax error: expected '{type}' but get '{m_curToken.TokenType}'");
             return default;
         }
 
-        public string MatchPropName()
+        public string GetPropName()
         {
             if (m_curToken.TokenType == TokenType.STRING)
             {
+                var str = m_curToken.Value;
                 m_curToken = m_lexer.GetNextToken();
-                return m_curToken.Value;
+                return str;
             }
 
             ReportDetailError($"syntax error: expected '{TokenType.STRING}' but get '{m_curToken.TokenType}'");
+            return default;
+        }
+
+        public string GetNumber()
+        {
+            if (m_curToken.TokenType == TokenType.NUMBER)
+            {
+                var str = m_curToken.Value;
+                m_curToken = m_lexer.GetNextToken();
+                return str;
+            }
+
+            ReportDetailError($"syntax error: expected '{TokenType.NUMBER}' but get '{m_curToken.TokenType}'");
+            return default;
+        }
+
+        public bool GetBool()
+        {
+            if (m_curToken.TokenType == TokenType.TRUE)
+            {
+                m_curToken = m_lexer.GetNextToken();
+                return true;
+            }
+
+            if (m_curToken.TokenType == TokenType.FALSE)
+            {
+                m_curToken = m_lexer.GetNextToken();
+                return false;
+            }
+
+            ReportDetailError($"syntax error: expected 'True or Fale' but get '{m_curToken.TokenType}'");
             return default;
         }
 

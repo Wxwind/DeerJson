@@ -11,7 +11,7 @@ namespace DeerJson.Deserializer
         {
         }
 
-        public IDeserializer FindDeseializer(Type type)
+        public IDeserializer FindDeserializer(Type type)
         {
             return m_cache.FindOrCreateDeserializer(this, type);
         }

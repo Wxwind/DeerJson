@@ -2,6 +2,6 @@
 {
     public interface IResolvableDeserializer
     {
-        void Resolve();
+        void Resolve(DeserializeContext ctx);
     }
 }
