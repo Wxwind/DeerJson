@@ -22,7 +22,7 @@ namespace DeerJson.Deserializer.std
             
             while (!p.HasToken(TokenType.RBRACE))
             {
-                var propname = p.GetPropName();
+                var propname = p.GetString();
                 p.Match(TokenType.COLON);
                 if (m_propertyInfoDic.TryGetValue(propname, out var settableProperty))
                 {

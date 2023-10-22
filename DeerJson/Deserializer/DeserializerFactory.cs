@@ -31,9 +31,14 @@ namespace DeerJson.Deserializer
             {
                 return StringDeserializer.Instance;
             }
-
+            
             if (type.IsPrimitive)
             {
+                if (type == typeof(char))
+                {
+                    return CharDeserializer.Instance;
+                }
+                
                 return FindStdScalarDeserializer(type);
             }
 

@@ -34,7 +34,7 @@
             return default;
         }
 
-        public string GetPropName()
+        public string GetString()
         {
             if (m_curToken.TokenType == TokenType.STRING)
             {

@@ -2,19 +2,21 @@
 
 public class PlainObj : IEquatable<PlainObj>
 {
-    private readonly string name;
-    private readonly bool   isAuthor;
-    private readonly int    count;
+    private string name;
+    private bool   isAuthor;
+    private int    count;
+    private char   char1;
 
     public PlainObj()
     {
     }
 
-    public PlainObj(string name, bool isAuthor, int count)
+    public PlainObj(string name, bool isAuthor, int count, char char1)
     {
         this.name = name;
         this.isAuthor = isAuthor;
         this.count = count;
+        this.char1 = char1;
     }
 
 

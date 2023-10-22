@@ -19,7 +19,7 @@ public class DeserializeTest
         var filePath = Path.Combine("../../../TestJson", jsonName);
         var json = File.ReadAllText(filePath);
         var obj = m_jsonMapper.ParseJson<PlainObj>(json);
-        var expected = new PlainObj("wxwind", true, 123);
+        var expected = new PlainObj("wxwind", true, 123, 'h');
 
         obj.Should().BeEquivalentTo(expected);
 
