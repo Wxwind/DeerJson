@@ -5,7 +5,7 @@ namespace DeerJson.Deserializer
 {
     public class DeserializeContext
     {
-        private DeserializerCache m_cache = new DeserializerCache();
+        private readonly DeserializerCache m_cache = new DeserializerCache();
 
         public DeserializeContext()
         {

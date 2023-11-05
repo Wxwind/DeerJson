@@ -1,13 +1,14 @@
 ﻿using System;
 using DeerJson.Deserializer;
-using DeerJson.Deserializer.std;
 using DeerJson.Node;
+using DeerJson.Serializer;
 
 namespace DeerJson
 {
     public class JsonMapper
     {
         private readonly DeserializeContext m_deserializeContext = new DeserializeContext();
+        private readonly SerializeContext   m_serializeContext   = new SerializeContext();
 
         public JsonMapper()
         {
@@ -21,24 +22,26 @@ namespace DeerJson
 
         private object ParseJson(Type type, string json)
         {
-            var desc = m_deserializeContext.FindDeserializer(type);
+            var dese = m_deserializeContext.FindDeserializer(type);
             var p = new JsonParser(json);
-            return ReadValue(p, desc);
+            return dese.Deserialize(p);
         }
 
+        // TODO: Extend feature of JsonObject
         public JsonNode ParseToTree(string json)
         {
             return ParseJson<JsonNode>(json);
         }
 
-        public string ToJson<T>(T value)
+        public string ToJson(object value)
         {
-            return "";
+            using (var gen = new JsonGenerator())
+            {
+                var ser = m_serializeContext.FindSerializer(value.GetType());
+                ser.Serialize(value, gen);
+                return gen.GetValueAsString();
+            }
         }
-
-        private object ReadValue(JsonParser p, IDeserializer dese)
-        {
-            return dese.Deserialize(p);
-        }
+        
     }
 }

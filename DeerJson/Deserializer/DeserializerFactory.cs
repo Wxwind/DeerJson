@@ -34,19 +34,19 @@ namespace DeerJson.Deserializer
             
             if (type.IsPrimitive)
             {
-                if (type == typeof(char))
-                {
-                    return CharDeserializer.Instance;
-                }
-                
-                return FindStdScalarDeserializer(type);
+                return FindStdPrimitiveDeserializer(type);
             }
 
             throw new JsonException($"not supported std type of '{type}'");
         }
 
-        private IDeserializer FindStdScalarDeserializer(Type type)
+        private IDeserializer FindStdPrimitiveDeserializer(Type type)
         {
+            if (type == typeof(char))
+            {
+                return CharDeserializer.Instance;
+            }
+            
             if (type == typeof(bool))
             {
                 return BooleanDeserializer.Instance;
@@ -64,12 +64,12 @@ namespace DeerJson.Deserializer
 
             if (type == typeof(short))
             {
-                return Int32Deserializer.Instance;
+                return Int16Deserializer.Instance;
             }
 
             if (type == typeof(ushort))
             {
-                return UInt32Deserializer.Instance;
+                return UInt16Deserializer.Instance;
             }
 
             if (type == typeof(int))
@@ -84,12 +84,12 @@ namespace DeerJson.Deserializer
 
             if (type == typeof(long))
             {
-                return Int32Deserializer.Instance;
+                return Int64Deserializer.Instance;
             }
 
             if (type == typeof(ulong))
             {
-                return UInt32Deserializer.Instance;
+                return UInt64Deserializer.Instance;
             }
 
             if (type == typeof(decimal))

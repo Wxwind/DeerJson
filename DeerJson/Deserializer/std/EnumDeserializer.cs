@@ -13,6 +13,7 @@ namespace DeerJson.Deserializer.std
 
         public override Enum Deserialize(JsonParser p)
         {
+            // TODO: deserialize enum
             // return Enum.ToObject(value_type, reader.Value);
             throw new NotImplementedException();
         }

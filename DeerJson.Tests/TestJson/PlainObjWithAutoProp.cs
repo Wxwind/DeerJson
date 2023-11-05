@@ -1,17 +1,17 @@
 ﻿namespace DeerJson.Tests.TestJson;
 
-public class PlainObj : IEquatable<PlainObj>
+public class PlainObjWithAutoProp : IEquatable<PlainObjWithAutoProp>
 {
-    public  string name;
-    private bool   isAuthor;
-    private int    count;
-    private char   char1;
+    private string name { get; set; }
+    private bool isAuthor { get; set; }
+    private int count { get; set; }
+    private char char1;
 
-    public PlainObj()
+    public PlainObjWithAutoProp()
     {
     }
 
-    public PlainObj(string name, bool isAuthor, int count, char char1)
+    public PlainObjWithAutoProp(string name, bool isAuthor, int count, char char1)
     {
         this.name = name;
         this.isAuthor = isAuthor;
@@ -25,7 +25,7 @@ public class PlainObj : IEquatable<PlainObj>
         return $"name = {name}, isAuthor = {isAuthor},count = {count} ";
     }
 
-    public bool Equals(PlainObj? other)
+    public bool Equals(PlainObjWithAutoProp? other)
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
@@ -37,7 +37,7 @@ public class PlainObj : IEquatable<PlainObj>
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
         if (obj.GetType() != GetType()) return false;
-        return Equals((PlainObj)obj);
+        return Equals((PlainObjWithAutoProp)obj);
     }
 
     public override int GetHashCode()

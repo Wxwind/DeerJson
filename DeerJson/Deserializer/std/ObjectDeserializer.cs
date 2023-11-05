@@ -22,11 +22,16 @@ namespace DeerJson.Deserializer.std
             
             while (!p.HasToken(TokenType.RBRACE))
             {
-                var propname = p.GetString();
+                var propName = p.GetString();
                 p.Match(TokenType.COLON);
-                if (m_propertyInfoDic.TryGetValue(propname, out var settableProperty))
+                if (m_propertyInfoDic.TryGetValue(propName, out var settableProperty))
                 {
                     settableProperty.DeserializeAndSet(p, o);
+                }
+                else
+                {
+                    // TODO: Support skipping redundancy json fields by config
+                    throw new JsonException($"serializing {m_type.Name}: missing filed {propName}'.");
                 }
 
                 // skip comma after obj pair
@@ -35,7 +40,7 @@ namespace DeerJson.Deserializer.std
                     p.Match(TokenType.COMMA);
                     if (p.HasToken(TokenType.RBRACE))
                     {
-                        throw new Exception("trailing comma is not allowed");
+                        throw new JsonException("trailing comma is not allowed");
                     }
                 }
             }
