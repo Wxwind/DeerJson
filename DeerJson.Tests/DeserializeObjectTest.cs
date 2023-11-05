@@ -4,7 +4,7 @@ using FluentAssertions;
 
 namespace DeerJson.Tests;
 
-public class DeserializeTest
+public class DeserializeObjectTest
 {
     private readonly JsonMapper m_jsonMapper = new();
 
@@ -37,4 +37,6 @@ public class DeserializeTest
 
         //Assert.That(obj, Is.EqualTo(expected));
     }
+
+
 }

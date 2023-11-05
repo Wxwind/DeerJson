@@ -10,8 +10,8 @@ namespace DeerJson.Serializer
     {
         private Type m_type;
 
-        private readonly List<WritableProperty> m_memberInfoList =
-            new List<WritableProperty>();
+        private readonly List<IWritableMember> m_memberInfoList =
+            new List<IWritableMember>();
 
 
         public void SetType(Type type)
@@ -24,27 +24,26 @@ namespace DeerJson.Serializer
             var fis = m_type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
             //find fields
-            foreach (var pi in fis)
+            foreach (var fi in fis)
             {
-                if (TypeUtil.IsAutoPropertyBackingField(pi))
+                if (TypeUtil.IsAutoPropertyBackingField(fi))
                 {
                     continue;
                 }
 
-                var writableProperty = new WritableProperty(pi.Name, pi);
-                m_memberInfoList.Add(writableProperty);
+                var writableField = new WritableField(fi.Name, fi);
+                m_memberInfoList.Add(writableField);
             }
-
-            // TODO: find auto prop
+            
             var pis = m_type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            // foreach (var pi in pis)
-            // {
-            //     if (TypeUtil.IsAutoProperty(pi))
-            //     {
-            //         var WritableProperty = new WritableProperty(pi);
-            //         m_memberInfoList.Add(pi.Name, WritableProperty);
-            //     }
-            // }
+            foreach (var pi in pis)
+            {
+                if (TypeUtil.IsAutoProperty(pi))
+                {
+                    var writableProperty = new WritableProperty(pi.Name, pi);
+                    m_memberInfoList.Add(writableProperty);
+                }
+            }
 
             return new ObjectSerializer(m_type, m_memberInfoList);
         }

@@ -3,19 +3,19 @@ using System.Reflection;
 
 namespace DeerJson.Serializer
 {
-    public class WritableProperty : IWritableMember
+    public class WritableField : IWritableMember
     {
-        private          ISerializer  m_valueSerializer;
-        private readonly PropertyInfo m_propInfo;
-        private readonly string       m_name;
+        private          ISerializer m_valueSerializer;
+        private readonly FieldInfo   m_fieldInfo;
+        private readonly string      m_name;
         public Type Type { get; }
 
 
-        public WritableProperty(string name, PropertyInfo pi)
+        public WritableField(string name, FieldInfo pi)
         {
             m_name = name;
-            m_propInfo = pi;
-            Type = pi.PropertyType;
+            m_fieldInfo = pi;
+            Type = pi.FieldType;
         }
 
         public void SetSerializer(ISerializer ser)
@@ -25,7 +25,7 @@ namespace DeerJson.Serializer
 
         public void SerializeAndWrite(JsonGenerator p, object obj)
         {
-            var value = m_propInfo.GetValue(obj);
+            var value = m_fieldInfo.GetValue(obj);
             p.WriteMemberName(m_name);
             m_valueSerializer.Serialize(value, p);
         }

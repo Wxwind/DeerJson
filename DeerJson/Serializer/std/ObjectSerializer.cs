@@ -5,10 +5,10 @@ namespace DeerJson.Serializer.std
 {
     public class ObjectSerializer : JsonSerializer<object>, IResolvableSerializer
     {
-        private readonly Type                   m_type;
-        private readonly List<WritableProperty> m_memberInfoList;
+        private readonly Type                  m_type;
+        private readonly List<IWritableMember> m_memberInfoList;
 
-        public ObjectSerializer(Type type, List<WritableProperty> memberInfoList)
+        public ObjectSerializer(Type type, List<IWritableMember> memberInfoList)
         {
             m_type = type;
             m_memberInfoList = memberInfoList;

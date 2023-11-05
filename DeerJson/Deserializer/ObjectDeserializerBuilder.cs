@@ -10,8 +10,8 @@ namespace DeerJson.Deserializer
     {
         private Type m_type;
 
-        private readonly Dictionary<string, SettableProperty> m_propertyInfoDic =
-            new Dictionary<string, SettableProperty>();
+        private readonly Dictionary<string, ISettableMember> m_memberInfoDic =
+            new Dictionary<string, ISettableMember>();
 
 
         public void SetType(Type type)
@@ -24,29 +24,28 @@ namespace DeerJson.Deserializer
             var fis = m_type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
             //find fields
-            foreach (var pi in fis)
+            foreach (var fi in fis)
             {
-                if (TypeUtil.IsAutoPropertyBackingField(pi))
+                if (TypeUtil.IsAutoPropertyBackingField(fi))
                 {
                     continue;
                 }
 
-                var settableProperty = new SettableProperty(pi);
-                m_propertyInfoDic.Add(pi.Name, settableProperty);
+                var settableProperty = new SettableField(fi);
+                m_memberInfoDic.Add(fi.Name, settableProperty);
+            }
+            
+            var pis = m_type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            foreach (var pi in pis)
+            {
+                if (TypeUtil.IsAutoProperty(pi))
+                {
+                    var settableProperty = new SettableProperty(pi);
+                    m_memberInfoDic.Add(pi.Name, settableProperty);
+                }
             }
 
-            // TODO: find auto prop
-            var pis = m_type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            // foreach (var pi in pis)
-            // {
-            //     if (TypeUtil.IsAutoProperty(pi))
-            //     {
-            //         var settableProperty = new SettableProperty(pi);
-            //         m_propertyInfoDic.Add(pi.Name, settableProperty);
-            //     }
-            // }
-
-            return new ObjectDeserializer(m_type, m_propertyInfoDic);
+            return new ObjectDeserializer(m_type, m_memberInfoDic);
         }
     }
 }

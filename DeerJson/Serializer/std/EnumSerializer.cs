@@ -6,7 +6,8 @@ namespace DeerJson.Serializer.std
     {
         public override void Serialize(Enum value, JsonGenerator gen)
         {
-            throw new NotImplementedException();
+            gen.WriteNumber((int)(object)value);
+            // gen.WriteString(value.ToString());
         }
     }
 }

@@ -4,17 +4,17 @@ using DeerJson.Deserializer.std;
 
 namespace DeerJson.Deserializer
 {
-    public class SettableProperty : ISettableMember
+    public class SettableField : ISettableMember
     {
         private          IDeserializer m_valueDeserializer;
-        private readonly PropertyInfo  m_propInfo;
+        private readonly FieldInfo     m_fieldInfo;
         public Type Type { get; }
 
 
-        public SettableProperty(PropertyInfo pi)
+        public SettableField(FieldInfo pi)
         {
-            m_propInfo = pi;
-            Type = pi.PropertyType;
+            m_fieldInfo = pi;
+            Type = pi.FieldType;
         }
 
         public void SetDeserializer(IDeserializer deser)
@@ -25,7 +25,7 @@ namespace DeerJson.Deserializer
         public void DeserializeAndSet(JsonParser p, object obj)
         {
             var v = m_valueDeserializer.Deserialize(p);
-            m_propInfo.SetValue(obj, v);
+            m_fieldInfo.SetValue(obj, v);
         }
     }
 }
