@@ -68,7 +68,7 @@
             {
                 var i = m_index;
                 m_index++;
-                return m_index == 0 ? Status.OK : Status.OK_NEED_COMMA;
+                return i == 0 ? Status.OK : Status.OK_NEED_COMMA;
             }
 
             m_index++;

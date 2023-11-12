@@ -14,13 +14,19 @@ namespace DeerJson.Serializer.std
             m_memberInfoList = memberInfoList;
         }
 
-        public override void Serialize(object value, JsonGenerator gen)
+        public override void Serialize(object value, JsonGenerator gen, SerializeContext ctx)
         {
             gen.WriteObjectStart();
 
-            foreach (var props in m_memberInfoList)
+            var memberList = new List<IWritableMember>(m_memberInfoList);
+            if (ctx.IsEnabled(JsonFeature.SERIALIZE_ORDER_BY_NAME))
             {
-                props.SerializeAndWrite(gen, value);
+                memberList.Sort((a, b) => a.Name.CompareTo(b.Name));
+            }
+
+            foreach (var props in memberList)
+            {
+                props.SerializeAndWrite(gen, value, ctx);
             }
 
             gen.WriteObjectEnd();

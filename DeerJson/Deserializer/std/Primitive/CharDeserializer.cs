@@ -6,7 +6,7 @@ namespace DeerJson.Deserializer.std.Primitive
     {
         public static readonly CharDeserializer Instance = new CharDeserializer();
 
-        public override char Deserialize(JsonParser p)
+        public override char Deserialize(JsonParser p, DeserializeContext ctx)
         {
             var v = p.GetString();
             var str = Convert.ToChar(v);

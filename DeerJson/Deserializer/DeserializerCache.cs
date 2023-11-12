@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using DeerJson.Deserializer.std;
 using DeerJson.Node;
@@ -48,38 +49,66 @@ namespace DeerJson.Deserializer
 
         private IDeserializer CreateDeserializer(Type type)
         {
-            // may just being resolved cuz you are dealing with cyclic dependencies.
+            // may just being resolved cuz in dealing with cyclic dependencies.
             if (m_incompleteDeserializers.TryGetValue(type, out var a)) return a;
 
+            // is enum
             if (type.IsEnum)
             {
                 var deser = m_factory.CreateEnumDeserializer(type);
                 return deser;
             }
 
+            // TODO: support dynamic type collection.
+            // is array
+            if (type.IsArray)
+            {
+                return m_factory.CreateArrayDeserializer(type);
+            }
+
+            //is list like
+            if (typeof(IList).IsAssignableFrom(type))
+            {
+                return m_factory.CreateListDeserializer(type);
+            }
+
+            // is dictionary like
+            if (typeof(IDictionary).IsAssignableFrom(type))
+            {
+                return m_factory.CreateDictionaryDeserializer(type);
+            }
+
+            // is string
+            if (type == typeof(string))
+            {
+                return StringDeserializer.Instance;
+            }
+
+            // is std primitive type
+            if (type.IsPrimitive)
+            {
+                return m_factory.FindStdPrimitiveDeserializer(type);
+            }
+
+            // is class
             if (type.IsClass && !type.IsSubclassOf(typeof(Delegate)) && !(type == typeof(string)))
             {
                 // TODO: is generic?
-                // is class
                 var deser = type == typeof(JsonNode)
                     ? m_factory.CreateJsonObjectDeserializer()
                     : m_factory.CreateObjectDeserializer(type);
                 return deser;
             }
 
+            // is struct
             if (type.IsValueType && !type.IsPrimitive && !type.IsEnum)
             {
-                // is struct
                 var deser = m_factory.CreateObjectDeserializer(type);
                 return deser;
             }
 
-            var d = m_factory.FindStdDeserializer(type);
-            if (d != null)
-            {
-                return d;
-            }
-            throw new JsonException($"not supported Deserializer of type '{type}'");
+
+            throw new JsonException($"not supported deserialize of type '{type}'");
         }
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface ISerializer
     {
-        void Serialize(object value, JsonGenerator gen);
+        void Serialize(object value, JsonGenerator gen, SerializeContext ctx);
     }
 }

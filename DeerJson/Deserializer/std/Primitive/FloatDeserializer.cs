@@ -6,7 +6,7 @@ namespace DeerJson.Deserializer.std.Primitive
     {
         public static readonly FloatDeserializer Instance = new FloatDeserializer();
 
-        public override float Deserialize(JsonParser p)
+        public override float Deserialize(JsonParser p, DeserializeContext ctx)
         {
             var v = p.GetNumber();
             var num = Convert.ToSingle(v);

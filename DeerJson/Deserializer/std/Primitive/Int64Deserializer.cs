@@ -6,7 +6,7 @@ namespace DeerJson.Deserializer.std.Primitive
     {
         public static readonly Int64Deserializer Instance = new Int64Deserializer();
 
-        public override long Deserialize(JsonParser p)
+        public override long Deserialize(JsonParser p, DeserializeContext ctx)
         {
             var v = p.GetNumber();
             var num = Convert.ToInt64(v);
@@ -18,7 +18,7 @@ namespace DeerJson.Deserializer.std.Primitive
     {
         public static readonly UInt64Deserializer Instance = new UInt64Deserializer();
 
-        public override ulong Deserialize(JsonParser p)
+        public override ulong Deserialize(JsonParser p, DeserializeContext ctx)
         {
             var v = p.GetNumber();
             var num = Convert.ToUInt64(v);

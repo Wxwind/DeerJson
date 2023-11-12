@@ -4,7 +4,7 @@
     {
         public static readonly BooleanDeserializer Instance = new BooleanDeserializer();
 
-        public override bool Deserialize(JsonParser p)
+        public override bool Deserialize(JsonParser p, DeserializeContext ctx)
         {
             var v = p.GetBool();
             return v;

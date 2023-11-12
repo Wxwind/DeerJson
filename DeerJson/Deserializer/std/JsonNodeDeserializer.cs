@@ -5,7 +5,7 @@ namespace DeerJson.Deserializer.std
 {
     public class JsonNodeDeserializer : JsonDeserializer<JsonNode>
     {
-        public override JsonNode Deserialize(JsonParser p)
+        public override JsonNode Deserialize(JsonParser p, DeserializeContext ctx)
         {
             return ExecValue(p);
         }

@@ -89,6 +89,10 @@
             return !HasToken(TokenType.EOF);
         }
 
+        public void SkipChildren()
+        {
+        }
+
         private void ReportDetailError(string error)
         {
             throw new JsonException($"parser error: {error}. \n In line {m_lexer.CurLine}");

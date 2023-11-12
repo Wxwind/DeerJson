@@ -6,7 +6,7 @@ namespace DeerJson.Deserializer.std.Primitive
     {
         public static readonly Int16Deserializer Instance = new Int16Deserializer();
 
-        public override short Deserialize(JsonParser p)
+        public override short Deserialize(JsonParser p, DeserializeContext ctx)
         {
             var v = p.GetNumber();
             var num = Convert.ToInt16(v);
@@ -18,7 +18,7 @@ namespace DeerJson.Deserializer.std.Primitive
     {
         public static readonly UInt16Deserializer Instance = new UInt16Deserializer();
 
-        public override ushort Deserialize(JsonParser p)
+        public override ushort Deserialize(JsonParser p, DeserializeContext ctx)
         {
             var v = p.GetNumber();
             var num = Convert.ToUInt16(v);

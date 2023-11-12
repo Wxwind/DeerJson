@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using DeerJson.Serializer.std;
 
 namespace DeerJson.Serializer
 {
@@ -44,34 +46,62 @@ namespace DeerJson.Serializer
 
         private ISerializer CreateSerializer(Type type)
         {
+            // may just being resolved cuz in dealing with cyclic dependencies.
+            if (m_incompleteSerializers.TryGetValue(type, out var a)) return a;
+
+            // is enum
             if (type.IsEnum)
             {
                 var ser = m_factory.CreateEnumSerializer(type);
                 return ser;
             }
 
+            // is array
+            if (type.IsArray)
+            {
+                return m_factory.CreateArraySerializer(type);
+            }
+
+            //is list like
+            if (typeof(IList).IsAssignableFrom(type))
+            {
+                return m_factory.CreateListSerializer(type);
+            }
+
+            // is dictionary like
+            if (typeof(IDictionary).IsAssignableFrom(type))
+            {
+                return m_factory.CreateDictionarySerializer(type);
+            }
+
+            // is string
+            if (type == typeof(string))
+            {
+                return StringSerializer.Instance;
+            }
+
+            // is std primitive type
+            if (type.IsPrimitive)
+            {
+                return m_factory.FindStdPrimitiveSerializer(type);
+            }
+
+            // is class
             if (type.IsClass && !type.IsSubclassOf(typeof(Delegate)) && !(type == typeof(string)))
             {
                 // TODO: is generic?
-                // is class
                 var ser = m_factory.CreateObjectSerializer(type);
                 return ser;
             }
 
+            // is struct
             if (type.IsValueType && !type.IsPrimitive && !type.IsEnum)
             {
-                // is struct
                 var ser = m_factory.CreateObjectSerializer(type);
                 return ser;
             }
 
-            var d = m_factory.FindStdSerializer(type);
-            if (d != null)
-            {
-                return d;
-            }
-
-            throw new JsonException($"not supported serializer of type '{type}'");
+            throw new JsonException($"not supported serialize of type '{type}'");
         }
     }
 }

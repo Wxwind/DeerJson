@@ -2,6 +2,6 @@
 {
     public interface IDeserializer
     {
-        object Deserialize(JsonParser p);
+        object Deserialize(JsonParser p, DeserializeContext ctx);
     }
 }

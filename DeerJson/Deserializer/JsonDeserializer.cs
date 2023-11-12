@@ -2,11 +2,11 @@
 {
     public abstract class JsonDeserializer<T> : IDeserializer
     {
-        object IDeserializer.Deserialize(JsonParser p)
+        object IDeserializer.Deserialize(JsonParser p, DeserializeContext ctx)
         {
-            return Deserialize(p);
+            return Deserialize(p, ctx);
         }
 
-        public abstract T Deserialize(JsonParser p);
+        public abstract T Deserialize(JsonParser p, DeserializeContext ctx);
     }
 }

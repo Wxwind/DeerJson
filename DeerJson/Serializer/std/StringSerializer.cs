@@ -4,7 +4,7 @@
     {
         public static StringSerializer Instance = new StringSerializer();
 
-        public override void Serialize(string value, JsonGenerator gen)
+        public override void Serialize(string value, JsonGenerator gen, SerializeContext ctx)
         {
             gen.WriteString(value);
         }

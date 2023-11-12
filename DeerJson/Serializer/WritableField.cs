@@ -7,13 +7,13 @@ namespace DeerJson.Serializer
     {
         private          ISerializer m_valueSerializer;
         private readonly FieldInfo   m_fieldInfo;
-        private readonly string      m_name;
-        public Type Type { get; }
 
+        public Type Type { get; }
+        public string Name { get; }
 
         public WritableField(string name, FieldInfo pi)
         {
-            m_name = name;
+            Name = name;
             m_fieldInfo = pi;
             Type = pi.FieldType;
         }
@@ -23,11 +23,11 @@ namespace DeerJson.Serializer
             m_valueSerializer = ser;
         }
 
-        public void SerializeAndWrite(JsonGenerator p, object obj)
+        public void SerializeAndWrite(JsonGenerator p, object obj, SerializeContext ctx)
         {
             var value = m_fieldInfo.GetValue(obj);
-            p.WriteMemberName(m_name);
-            m_valueSerializer.Serialize(value, p);
+            p.WriteMemberName(Name);
+            m_valueSerializer.Serialize(value, p, ctx);
         }
     }
 }

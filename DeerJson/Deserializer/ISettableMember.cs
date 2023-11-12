@@ -9,6 +9,6 @@ namespace DeerJson.Deserializer
 
         void SetDeserializer(IDeserializer deser);
 
-        void DeserializeAndSet(JsonParser p, object obj);
+        void DeserializeAndSet(JsonParser p, object obj, DeserializeContext ctx);
     }
 }

@@ -12,6 +12,7 @@ public class SerializeObjectTest
     [SetUp]
     public void Setup()
     {
+        m_jsonMapper.Configure(JsonFeature.SERIALIZE_ORDER_BY_NAME, true);
     }
 
     [TestCase("PlainObj.json")]

@@ -4,7 +4,7 @@
     {
         public static FloatSerializer Instance = new FloatSerializer();
 
-        public override void Serialize(float value, JsonGenerator gen)
+        public override void Serialize(float value, JsonGenerator gen, SerializeContext ctx)
         {
             gen.WriteNumber(value);
         }

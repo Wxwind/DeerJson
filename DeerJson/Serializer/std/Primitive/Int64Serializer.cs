@@ -4,7 +4,7 @@
     {
         public static Int64Serializer Instance = new Int64Serializer();
 
-        public override void Serialize(long value, JsonGenerator gen)
+        public override void Serialize(long value, JsonGenerator gen, SerializeContext ctx)
         {
             gen.WriteNumber(value);
         }
@@ -14,7 +14,7 @@
     {
         public static UInt64Serializer Instance = new UInt64Serializer();
 
-        public override void Serialize(ulong value, JsonGenerator gen)
+        public override void Serialize(ulong value, JsonGenerator gen, SerializeContext ctx)
         {
             gen.WriteNumber(value);
         }

@@ -5,13 +5,15 @@ namespace DeerJson.Deserializer.std
     public class EnumDeserializer : JsonDeserializer<object>
     {
         private readonly Type m_type;
+        private readonly Type m_underLyingType;
 
-        public EnumDeserializer(Type enumType)
+        public EnumDeserializer(Type enumType, Type underLyingType)
         {
             m_type = enumType;
+            m_underLyingType = underLyingType;
         }
 
-        public override object Deserialize(JsonParser p)
+        public override object Deserialize(JsonParser p, DeserializeContext ctx)
         {
             if (p.CurToken.TokenType == TokenType.NUMBER)
             {

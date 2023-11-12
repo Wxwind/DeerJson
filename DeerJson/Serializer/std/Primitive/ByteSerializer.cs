@@ -4,7 +4,7 @@
     {
         public static ByteSerializer Instance = new ByteSerializer();
 
-        public override void Serialize(byte value, JsonGenerator gen)
+        public override void Serialize(byte value, JsonGenerator gen, SerializeContext ctx)
         {
             gen.WriteNumber(value);
         }
@@ -14,7 +14,7 @@
     {
         public static SByteSerializer Instance = new SByteSerializer();
 
-        public override void Serialize(sbyte value, JsonGenerator gen)
+        public override void Serialize(sbyte value, JsonGenerator gen, SerializeContext ctx)
         {
             gen.WriteNumber(value);
         }

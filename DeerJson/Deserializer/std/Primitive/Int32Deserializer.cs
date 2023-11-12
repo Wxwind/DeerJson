@@ -6,7 +6,7 @@ namespace DeerJson.Deserializer.std.Primitive
     {
         public static readonly Int32Deserializer Instance = new Int32Deserializer();
 
-        public override int Deserialize(JsonParser p)
+        public override int Deserialize(JsonParser p, DeserializeContext ctx)
         {
             var v = p.GetNumber();
             var num = Convert.ToInt32(v);
@@ -18,7 +18,7 @@ namespace DeerJson.Deserializer.std.Primitive
     {
         public static readonly UInt32Deserializer Instance = new UInt32Deserializer();
 
-        public override uint Deserialize(JsonParser p)
+        public override uint Deserialize(JsonParser p, DeserializeContext ctx)
         {
             var v = p.GetNumber();
             var num = Convert.ToUInt32(v);

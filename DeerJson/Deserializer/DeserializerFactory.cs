@@ -1,19 +1,12 @@
 ﻿using System;
 using DeerJson.Deserializer.std;
+using DeerJson.Deserializer.std.Collection;
 using DeerJson.Deserializer.std.Primitive;
 
 namespace DeerJson.Deserializer
 {
     public class DeserializerFactory
     {
-        public IDeserializer CreateObjectDeserializer(Type type)
-        {
-            var builder = new ObjectDeserializerBuilder();
-            builder.SetType(type);
-            var deser = builder.Build();
-            return deser;
-        }
-
         public IDeserializer CreateJsonObjectDeserializer()
         {
             return new JsonNodeDeserializer();
@@ -22,25 +15,48 @@ namespace DeerJson.Deserializer
         public IDeserializer CreateEnumDeserializer(Type type)
         {
             var e = Enum.GetUnderlyingType(type);
-            return new EnumDeserializer(type);
+            return new EnumDeserializer(type, e);
         }
 
-        public IDeserializer FindStdDeserializer(Type type)
+        public IDeserializer CreateArrayDeserializer(Type type)
         {
-            if (type == typeof(string))
-            {
-                return StringDeserializer.Instance;
-            }
-            
-            if (type.IsPrimitive)
-            {
-                return FindStdPrimitiveDeserializer(type);
-            }
-
-            throw new JsonException($"not supported std type of '{type}'");
+            var e = type.GetElementType();
+            return new ArrayDeserializer(type, e);
         }
 
-        private IDeserializer FindStdPrimitiveDeserializer(Type type)
+        public IDeserializer CreateListDeserializer(Type type)
+        {
+            if (type.IsGenericType)
+            {
+                var e = type.GetGenericArguments();
+                return new ListDeserializer(type, e[0]);
+            }
+
+            // TODO: non-generic type
+            throw new NotSupportedException($"non-generic type is not supported, will be supported later");
+        }
+
+        public IDeserializer CreateDictionaryDeserializer(Type type)
+        {
+            if (type.IsGenericType)
+            {
+                var e = type.GetGenericArguments();
+                return new DictionaryDeserializer(type, e[0], e[1]);
+            }
+
+            // TODO: non-generic type
+            throw new NotSupportedException($"non-generic type is not supported, will be supported later");
+        }
+
+        public IDeserializer CreateObjectDeserializer(Type type)
+        {
+            var builder = new ObjectDeserializerBuilder();
+            builder.SetType(type);
+            var deser = builder.Build();
+            return deser;
+        }
+
+        public IDeserializer FindStdPrimitiveDeserializer(Type type)
         {
             if (type == typeof(char))
             {

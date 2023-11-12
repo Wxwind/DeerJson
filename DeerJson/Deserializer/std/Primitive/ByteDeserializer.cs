@@ -6,7 +6,7 @@ namespace DeerJson.Deserializer.std.Primitive
     {
         public static readonly ByteDeserializer Instance = new ByteDeserializer();
 
-        public override byte Deserialize(JsonParser p)
+        public override byte Deserialize(JsonParser p, DeserializeContext ctx)
         {
             var v = p.GetNumber();
             var num = Convert.ToByte(v);
@@ -18,7 +18,7 @@ namespace DeerJson.Deserializer.std.Primitive
     {
         public static readonly SByteDeserializer Instance = new SByteDeserializer();
 
-        public override sbyte Deserialize(JsonParser p)
+        public override sbyte Deserialize(JsonParser p, DeserializeContext ctx)
         {
             var v = p.GetNumber();
             var num = Convert.ToSByte(v);

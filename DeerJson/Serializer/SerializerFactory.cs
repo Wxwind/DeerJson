@@ -1,5 +1,6 @@
 ﻿using System;
 using DeerJson.Serializer.std;
+using DeerJson.Serializer.std.Collection;
 using DeerJson.Serializer.std.Primitive;
 
 namespace DeerJson.Serializer
@@ -11,6 +12,37 @@ namespace DeerJson.Serializer
             return new EnumSerializer();
         }
 
+        public ISerializer CreateArraySerializer(Type type)
+        {
+            var e = type.GetElementType();
+            return new ArraySerializer(type, e);
+        }
+
+        public ISerializer CreateListSerializer(Type type)
+        {
+            if (type.IsGenericType)
+            {
+                var e = type.GetGenericArguments();
+                return new ListSerializer(type, e[0]);
+            }
+
+            // TODO: non-generic type
+            throw new NotSupportedException($"non-generic type is not supported, will be supported later");
+        }
+
+        public ISerializer CreateDictionarySerializer(Type type)
+        {
+            if (type.IsGenericType)
+            {
+                var e = type.GetGenericArguments();
+                return new DictionarySerializer(type, e[0], e[1]);
+            }
+
+            // TODO: non-generic type
+            throw new NotSupportedException($"non-generic type is not supported, will be supported later");
+        }
+
+
         public ISerializer CreateObjectSerializer(Type type)
         {
             var builder = new ObjectSerializerBuilder();
@@ -19,22 +51,7 @@ namespace DeerJson.Serializer
             return ser;
         }
 
-        public ISerializer FindStdSerializer(Type type)
-        {
-            if (type == typeof(string))
-            {
-                return StringSerializer.Instance;
-            }
-
-            if (type.IsPrimitive)
-            {
-                return FindStdPrimitiveSerializer(type);
-            }
-
-            throw new JsonException($"not supported std type of '{type}'");
-        }
-
-        private ISerializer FindStdPrimitiveSerializer(Type type)
+        public ISerializer FindStdPrimitiveSerializer(Type type)
         {
             if (type == typeof(char))
             {

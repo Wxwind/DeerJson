@@ -15,7 +15,7 @@ namespace DeerJson.Deserializer.std
             m_memberInfoDic = memberInfoDic;
         }
 
-        public override object Deserialize(JsonParser p)
+        public override object Deserialize(JsonParser p, DeserializeContext ctx)
         {
             p.Match(TokenType.LBRACE);
             var o = Activator.CreateInstance(m_type);
@@ -26,12 +26,16 @@ namespace DeerJson.Deserializer.std
                 p.Match(TokenType.COLON);
                 if (m_memberInfoDic.TryGetValue(propName, out var settableMember))
                 {
-                    settableMember.DeserializeAndSet(p, o);
+                    settableMember.DeserializeAndSet(p, o, ctx);
                 }
                 else
                 {
-                    // TODO: Support skipping redundancy json fields by config
-                    throw new JsonException($"serializing {m_type.Name}: missing filed {propName}'.");
+                    if (!ctx.IsEnabled(JsonFeature.DESERIALIZE_FAIL_ON_UNKNOWN_PROPERTIES))
+                    {
+                        // TODO: Support skipping redundancy json fields by config
+                        throw new JsonException($"serializing {m_type.Name}: missing filed {propName}'.");
+                    }
+                    else throw new JsonException($"serializing {m_type.Name}: missing filed {propName}'.");
                 }
 
                 // skip comma after obj pair

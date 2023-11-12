@@ -4,7 +4,7 @@
     {
         public static CharSerializer Instance = new CharSerializer();
 
-        public override void Serialize(char value, JsonGenerator gen)
+        public override void Serialize(char value, JsonGenerator gen, SerializeContext ctx)
         {
             gen.WriteString(value);
         }

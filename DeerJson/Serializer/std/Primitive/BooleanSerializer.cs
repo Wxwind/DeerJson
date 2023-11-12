@@ -4,7 +4,7 @@
     {
         public static BooleanSerializer Instance = new BooleanSerializer();
 
-        public override void Serialize(bool value, JsonGenerator gen)
+        public override void Serialize(bool value, JsonGenerator gen, SerializeContext ctx)
         {
             gen.WriteBoolean(value);
         }

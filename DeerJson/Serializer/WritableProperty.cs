@@ -7,13 +7,12 @@ namespace DeerJson.Serializer
     {
         private          ISerializer  m_valueSerializer;
         private readonly PropertyInfo m_propInfo;
-        private readonly string       m_name;
         public Type Type { get; }
-
+        public string Name { get; }
 
         public WritableProperty(string name, PropertyInfo pi)
         {
-            m_name = name;
+            Name = name;
             m_propInfo = pi;
             Type = pi.PropertyType;
         }
@@ -23,11 +22,11 @@ namespace DeerJson.Serializer
             m_valueSerializer = ser;
         }
 
-        public void SerializeAndWrite(JsonGenerator p, object obj)
+        public void SerializeAndWrite(JsonGenerator p, object obj, SerializeContext ctx)
         {
             var value = m_propInfo.GetValue(obj);
-            p.WriteMemberName(m_name);
-            m_valueSerializer.Serialize(value, p);
+            p.WriteMemberName(Name);
+            m_valueSerializer.Serialize(value, p, ctx);
         }
     }
 }

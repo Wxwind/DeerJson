@@ -22,9 +22,9 @@ namespace DeerJson.Deserializer
             m_valueDeserializer = deser;
         }
 
-        public void DeserializeAndSet(JsonParser p, object obj)
+        public void DeserializeAndSet(JsonParser p, object obj, DeserializeContext ctx)
         {
-            var v = m_valueDeserializer.Deserialize(p);
+            var v = m_valueDeserializer.Deserialize(p, ctx);
             m_fieldInfo.SetValue(obj, v);
         }
     }
