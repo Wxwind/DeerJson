@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using DeerJson.Tests.Type;
+using FluentAssertions;
 
 namespace DeerJson.Tests;
 

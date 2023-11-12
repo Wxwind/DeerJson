@@ -32,5 +32,10 @@ namespace DeerJson.Serializer
         {
             return m_cache.FindOrCreateSerializer(this, type);
         }
+
+        public ISerializer FindStdKeySerializer(Type type)
+        {
+            return m_cache.FindStdKeySerializer(type);
+        }
     }
 }

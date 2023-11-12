@@ -24,7 +24,7 @@ namespace DeerJson.Deserializer.std
                     return Enum.ToObject(m_type, num);
                 }
 
-                throw new JsonException($"Enum {m_type} doesn't have constant whose base value equals '{num}'");
+                throw new JsonException($"Enum {m_type} doesn't have enum constant whose base value equals '{num}'");
             }
 
             if (p.CurToken.TokenType == TokenType.STRING)

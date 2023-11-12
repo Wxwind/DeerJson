@@ -1,4 +1,4 @@
-﻿using DeerJson.Tests.TestJson;
+﻿using DeerJson.Tests.Type;
 using DeerJson.Tests.Util;
 using FluentAssertions;
 
@@ -37,6 +37,5 @@ public class DeserializeObjectTest
 
         //Assert.That(obj, Is.EqualTo(expected));
     }
-
-
+    
 }

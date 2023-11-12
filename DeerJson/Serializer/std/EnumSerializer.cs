@@ -6,8 +6,11 @@ namespace DeerJson.Serializer.std
     {
         public override void Serialize(Enum value, JsonGenerator gen, SerializeContext ctx)
         {
-            gen.WriteNumber((int)(object)value);
-            // gen.WriteString(value.ToString());
+            if (ctx.IsEnabled(JsonFeature.SERIALIZE_UNDERLYING_TYPE_FOR_ENUM))
+            {
+                gen.WriteNumber((int)(object)value);
+            }
+            else gen.WriteString(value.ToString());
         }
     }
 }

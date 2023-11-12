@@ -1,10 +1,10 @@
 ﻿{
-  "str": "hello",
   "numArr": [
     1,
     2,
     3
   ],
+  "str": "hello",
   "subObj": {
     "subNum": 1,
     "isObj": true

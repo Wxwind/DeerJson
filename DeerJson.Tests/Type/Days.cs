@@ -1,4 +1,6 @@
-﻿public enum Days
+﻿namespace DeerJson.Tests.Type;
+
+public enum Days
 {
     Sunday = 0, // 星期天
     Monday,     // 星期一

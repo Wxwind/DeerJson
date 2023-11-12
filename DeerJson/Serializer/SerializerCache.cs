@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DeerJson.Serializer.std;
+using DeerJson.Serializer.std.Key;
 
 namespace DeerJson.Serializer
 {
@@ -14,6 +15,21 @@ namespace DeerJson.Serializer
             new Dictionary<Type, ISerializer>();
 
         private readonly SerializerFactory m_factory = new SerializerFactory();
+
+        public ISerializer FindStdKeySerializer(Type type)
+        {
+            if (type.IsEnum)
+            {
+                return EnumKeySerializer.Instance;
+            }
+
+            if (type.IsPrimitive || type == typeof(string))
+            {
+                return StringKeySerializer.Instance;
+            }
+
+            throw new JsonException($"not support key of type {type}");
+        }
 
         public ISerializer FindOrCreateSerializer(SerializeContext ctx, Type type)
         {

@@ -88,10 +88,7 @@
         {
             return !HasToken(TokenType.EOF);
         }
-
-        public void SkipChildren()
-        {
-        }
+        
 
         private void ReportDetailError(string error)
         {

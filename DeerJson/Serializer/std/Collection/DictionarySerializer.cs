@@ -25,7 +25,7 @@ namespace DeerJson.Serializer.std.Collection
 
             foreach (DictionaryEntry kv in value)
             {
-                gen.WriteMemberName(kv.Key.ToString());
+                m_keySerializer.Serialize(kv.Key, gen, ctx);
                 m_valueSerializer.Serialize(kv.Value, gen, ctx);
             }
 
@@ -34,7 +34,7 @@ namespace DeerJson.Serializer.std.Collection
 
         public void Resolve(SerializeContext ctx)
         {
-            m_keySerializer = ctx.FindSerializer(m_keyType);
+            m_keySerializer = ctx.FindStdKeySerializer(m_keyType);
             m_valueSerializer = ctx.FindSerializer(m_valueType);
         }
     }

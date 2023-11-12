@@ -1,4 +1,4 @@
-﻿namespace DeerJson.Tests.TestJson;
+﻿namespace DeerJson.Tests.Type;
 
 public class PlainObjWithAutoProp : IEquatable<PlainObjWithAutoProp>
 {

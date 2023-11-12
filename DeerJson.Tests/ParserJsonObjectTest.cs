@@ -9,7 +9,7 @@ public class ParserJsonObjectTest
     {
     }
 
-    [TestCase("simpleObject.json")]
+    [TestCase("SimpleObject.json")]
     public void Parser_Example1(string jsonName)
     {
         try
