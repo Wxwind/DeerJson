@@ -15,9 +15,11 @@ namespace DeerJson.Deserializer.std
 
         public override object Deserialize(JsonParser p, DeserializeContext ctx)
         {
-            if (p.CurToken.TokenType == TokenType.NUMBER)
+            var t = p.GetValue();
+            var v = t.Value;
+
+            if (t.TokenType == TokenType.NUMBER)
             {
-                var v = p.GetNumber();
                 var num = Convert.ToInt32(v);
                 if (Enum.IsDefined(m_type, num))
                 {
@@ -27,9 +29,8 @@ namespace DeerJson.Deserializer.std
                 throw new JsonException($"Enum {m_type} doesn't have enum constant whose base value equals '{num}'");
             }
 
-            if (p.CurToken.TokenType == TokenType.STRING)
+            if (t.TokenType == TokenType.STRING)
             {
-                var v = p.GetString();
                 if (Enum.IsDefined(m_type, v))
                 {
                     return Enum.Parse(m_type, v);
@@ -38,7 +39,8 @@ namespace DeerJson.Deserializer.std
                 throw new JsonException($"Enum {m_type} doesn't have constant whose name is {v}");
             }
 
-            throw new JsonException($"Deserialization of enum need value type of string or number");
+            throw new JsonException(
+                $"Deserialization of enum need value type of string or number, but get {p.CurToken.TokenType}");
         }
     }
 }

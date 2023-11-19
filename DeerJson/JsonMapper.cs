@@ -11,6 +11,8 @@ namespace DeerJson
         private readonly SerializeContext   m_serializeContext   = new SerializeContext();
         private readonly JsonConfigure      m_configure          = new JsonConfigure();
 
+        public static JsonMapper Default = new JsonMapper();
+
         public JsonMapper()
         {
         }

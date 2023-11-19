@@ -21,6 +21,8 @@
     <ItemGroup>
         <ProjectReference Include="..\DeerJson\DeerJson.csproj"/>
 
+
+
     </ItemGroup>
 
 

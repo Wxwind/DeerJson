@@ -185,7 +185,7 @@ namespace DeerJson
                     break;
                 case GeneratorContext.Status.EXPECT_NAME:
                     throw new JsonException(
-                        $"can't write value of type {value.GetType()}, expect write field in context {m_genContext.CurContextType} ");
+                        $"can't write value of type {value.GetType()}, expect write member name in context {m_genContext.CurContextType}");
                 default:
                     break;
             }
@@ -194,7 +194,7 @@ namespace DeerJson
 
         public void Dispose()
         {
-            m_textWriter?.Dispose();
+            m_textWriter.Dispose();
         }
         
     }

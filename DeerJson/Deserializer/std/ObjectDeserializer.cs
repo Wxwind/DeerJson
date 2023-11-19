@@ -17,14 +17,14 @@ namespace DeerJson.Deserializer.std
 
         public override object Deserialize(JsonParser p, DeserializeContext ctx)
         {
-            p.Match(TokenType.LBRACE);
+            p.GetObjectStart();
             var o = Activator.CreateInstance(m_type);
-            
-            while (!p.HasToken(TokenType.RBRACE))
+
+            string name;
+
+            while ((name = p.GetMemberName()) != null)
             {
-                var propName = p.GetString();
-                p.Match(TokenType.COLON);
-                if (m_memberInfoDic.TryGetValue(propName, out var settableMember))
+                if (m_memberInfoDic.TryGetValue(name, out var settableMember))
                 {
                     settableMember.DeserializeAndSet(p, o, ctx);
                 }
@@ -32,23 +32,13 @@ namespace DeerJson.Deserializer.std
                 {
                     if (!ctx.IsEnabled(JsonFeature.DESERIALIZE_FAIL_ON_UNKNOWN_PROPERTIES))
                     {
-                        // TODO: Support skipping redundancy json fields by config
-                        throw new JsonException($"serializing {m_type.Name}: missing filed {propName}'.");
+                        throw new JsonException($"serializing {m_type.Name}: missing filed {name}'.");
                     }
-                    else throw new JsonException($"serializing {m_type.Name}: missing filed {propName}'.");
-                }
-
-                // skip comma after obj pair
-                if (p.HasToken(TokenType.COMMA))
-                {
-                    p.Match(TokenType.COMMA);
-                    if (p.HasToken(TokenType.RBRACE))
-                    {
-                        throw new JsonException("trailing comma is not allowed");
-                    }
+                    else p.SkipMemberValue();
                 }
             }
 
+            p.GetObjectEnd();
             return o;
         }
 

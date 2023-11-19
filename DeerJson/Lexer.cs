@@ -61,8 +61,7 @@ namespace DeerJson
 
             throw new Exception($"lexer: unresolved symbol '{m_nowChar}'");
         }
-
-
+        
         private Token ScanNumber()
         {
             var start = m_nowIndex;

@@ -1,6 +1,6 @@
 ﻿namespace DeerJson
 {
-    public class GeneratorContext
+    public class ParserContext
     {
         public enum Status : byte
         {
@@ -18,25 +18,25 @@
             ARRAY
         }
 
-        private readonly GeneratorContext m_parent;
+        private readonly ParserContext m_parent;
 
         private int  m_index          = 0;
         private bool m_hasWrittenName = false;
 
         public ContextType CurContextType { get; }
 
-        public GeneratorContext()
+        public ParserContext()
         {
             CurContextType = ContextType.NONE;
         }
 
-        public GeneratorContext(GeneratorContext parent, ContextType contextType)
+        public ParserContext(ParserContext parent, ContextType contextType)
         {
             m_parent = parent;
             CurContextType = contextType;
         }
 
-        public Status OnBeforeWriteMemberName()
+        public Status OnBeforeGetMemberName()
         {
             if (m_hasWrittenName)
             {
@@ -47,7 +47,7 @@
             return m_index == 0 ? Status.OK : Status.OK_NEED_COMMA;
         }
 
-        public Status OnBeforeWriteValue()
+        public Status OnBeforeGetValue()
         {
             if (CurContextType == ContextType.OBJECT)
             {
@@ -82,17 +82,17 @@
             return CurContextType == ContextType.OBJECT;
         }
 
-        public GeneratorContext NewArrayContext()
+        public ParserContext NewArrayContext()
         {
-            return new GeneratorContext(this, ContextType.ARRAY);
+            return new ParserContext(this, ContextType.ARRAY);
         }
 
-        public GeneratorContext NewObjectContext()
+        public ParserContext NewObjectContext()
         {
-            return new GeneratorContext(this, ContextType.OBJECT);
+            return new ParserContext(this, ContextType.OBJECT);
         }
 
-        public GeneratorContext GetParentContext()
+        public ParserContext GetParentContext()
         {
             return m_parent;
         }
