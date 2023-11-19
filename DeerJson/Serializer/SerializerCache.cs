@@ -25,7 +25,7 @@ namespace DeerJson.Serializer
 
             if (type.IsPrimitive || type == typeof(string))
             {
-                return StringKeySerializer.Instance;
+                return StdKeySerializer.Instance;
             }
 
             throw new JsonException($"not support key of type {type}");

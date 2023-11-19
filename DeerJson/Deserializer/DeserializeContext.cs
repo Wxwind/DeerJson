@@ -1,5 +1,4 @@
 ﻿using System;
-using DeerJson.Deserializer.std;
 
 namespace DeerJson.Deserializer
 {
@@ -26,6 +25,11 @@ namespace DeerJson.Deserializer
         public bool IsEnabled(JsonFeature f)
         {
             return m_configure.IsEnabled(f);
+        }
+
+        public IKeyDeserializer FindStdKeySerializer(Type type)
+        {
+            return m_cache.FindStdKeySerializer(type);
         }
 
         public IDeserializer FindDeserializer(Type type)

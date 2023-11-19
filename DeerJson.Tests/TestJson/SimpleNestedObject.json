@@ -6,7 +6,7 @@
   ],
   "str": "hello",
   "subObj": {
-    "subNum": 1,
-    "isObj": true
+    "isObj": true,
+    "subNum": 1
   }
 }

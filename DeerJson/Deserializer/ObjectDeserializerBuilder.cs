@@ -21,11 +21,19 @@ namespace DeerJson.Deserializer
 
         public ObjectDeserializer Build()
         {
+            var ignoreNames = new List<string>();
+            
             var fis = m_type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
             //find fields
             foreach (var fi in fis)
             {
+                if (TypeUtil.IsIgnoreMember(fi))
+                {
+                    ignoreNames.Add(fi.Name);
+                    continue;
+                }
+                
                 if (TypeUtil.IsAutoPropertyBackingField(fi))
                 {
                     continue;
@@ -38,6 +46,12 @@ namespace DeerJson.Deserializer
             var pis = m_type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             foreach (var pi in pis)
             {
+                if (TypeUtil.IsIgnoreMember(pi))
+                {
+                    ignoreNames.Add(pi.Name);
+                    continue;
+                }
+                
                 if (TypeUtil.IsAutoProperty(pi))
                 {
                     var settableProperty = new SettableProperty(pi);
@@ -45,7 +59,8 @@ namespace DeerJson.Deserializer
                 }
             }
 
-            return new ObjectDeserializer(m_type, m_memberInfoDic);
+            return new ObjectDeserializer(m_type, m_memberInfoDic, ignoreNames);
         }
+
     }
 }

@@ -16,6 +16,7 @@ namespace DeerJson
 
         public void WriteObjectStart()
         {
+            VerifyValueWrite("start object");
             m_genContext = m_genContext.NewObjectContext();
             WriteRaw("{");
         }
@@ -63,6 +64,7 @@ namespace DeerJson
 
         public void WriteArrayStart()
         {
+            VerifyValueWrite("start array");
             m_genContext = m_genContext.NewArrayContext();
             WriteRaw("[");
         }
@@ -80,73 +82,73 @@ namespace DeerJson
 
         public void WriteNumber(short value)
         {
-            VerifyValueWrite(value);
+            VerifyValueWrite("write short");
             WriteRaw(value.ToString());
         }
 
         public void WriteNumber(ushort value)
         {
-            VerifyValueWrite(value);
+            VerifyValueWrite("write ushort");
             WriteRaw(value.ToString());
         }
 
         public void WriteNumber(int value)
         {
-            VerifyValueWrite(value);
+            VerifyValueWrite("write int");
             WriteRaw(value.ToString());
         }
 
         public void WriteNumber(uint value)
         {
-            VerifyValueWrite(value);
+            VerifyValueWrite("write uint");
             WriteRaw(value.ToString());
         }
 
         public void WriteNumber(long value)
         {
-            VerifyValueWrite(value);
+            VerifyValueWrite("write long");
             WriteRaw(value.ToString());
         }
 
         public void WriteNumber(ulong value)
         {
-            VerifyValueWrite(value);
+            VerifyValueWrite("write ulong");
             WriteRaw(value.ToString());
         }
 
         public void WriteNumber(float value)
         {
-            VerifyValueWrite(value);
+            VerifyValueWrite("write double");
             WriteRaw(value.ToString());
         }
 
         public void WriteNumber(double value)
         {
-            VerifyValueWrite(value);
+            VerifyValueWrite("write double");
             WriteRaw(value.ToString());
         }
 
         public void WriteNumber(decimal value)
         {
-            VerifyValueWrite(value);
+            VerifyValueWrite("write decimal");
             WriteRaw(value.ToString());
         }
 
         public void WriteNumber(byte value)
         {
-            VerifyValueWrite(value);
+            VerifyValueWrite("write byte");
             WriteRaw(value.ToString());
         }
 
         public void WriteNumber(sbyte value)
         {
-            VerifyValueWrite(value);
+            VerifyValueWrite("write sbyte");
             WriteRaw(value.ToString());
         }
 
         public void WriteString(char value)
         {
-            VerifyValueWrite(value);
+            VerifyValueWrite("write char");
             WriteRaw("\"");
             WriteRaw(value.ToString());
             WriteRaw("\"");
@@ -154,7 +156,7 @@ namespace DeerJson
 
         public void WriteString(string value)
         {
-            VerifyValueWrite(value);
+            VerifyValueWrite("write string");
             WriteRaw("\"");
             WriteRaw(value);
             WriteRaw("\"");
@@ -162,8 +164,14 @@ namespace DeerJson
 
         public void WriteBoolean(bool value)
         {
-            VerifyValueWrite(value);
+            VerifyValueWrite("write boolean");
             WriteRaw(value ? "true" : "false");
+        }
+
+        public void WriteNull()
+        {
+            VerifyValueWrite("write null");
+            WriteRaw("null");
         }
 
         public string GetValueAsString()
@@ -172,7 +180,7 @@ namespace DeerJson
         }
 
         // Try auto complete the colon (object value) or comma (array value) before write any value.
-        private void VerifyValueWrite(object value)
+        private void VerifyValueWrite(string msg)
         {
             var status = m_genContext.OnBeforeWriteValue();
             switch (status)
@@ -185,7 +193,7 @@ namespace DeerJson
                     break;
                 case GeneratorContext.Status.EXPECT_NAME:
                     throw new JsonException(
-                        $"can't write value of type {value.GetType()}, expect write member name in context {m_genContext.CurContextType}");
+                        $"can't write value while ${msg}, expect write member name in context {m_genContext.CurContextType}");
                 default:
                     break;
             }

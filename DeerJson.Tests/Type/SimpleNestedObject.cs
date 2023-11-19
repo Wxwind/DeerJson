@@ -23,6 +23,11 @@ public class SimpleNestedObject : IEquatable<SimpleNestedObject>
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
+        if (str == other.str && numArr.SequenceEqual(other.numArr) && subObj == null && other.subObj == null)
+        {
+            return true;
+        }
+        
         return str == other.str && numArr.SequenceEqual(other.numArr) && subObj.Equals(other.subObj);
     }
 

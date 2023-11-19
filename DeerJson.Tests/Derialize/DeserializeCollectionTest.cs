@@ -1,5 +1,4 @@
-﻿using DeerJson.Tests.Type;
-using DeerJson.Tests.Util;
+﻿using DeerJson.Tests.Util;
 using FluentAssertions;
 
 namespace DeerJson.Tests;
@@ -35,13 +34,12 @@ public class DeserializeCollectionTest
         obj.Should().BeEquivalentTo(expected);
     }
 
-    [TestCase("SimpleNestedObject.json")]
-    public void SimpleNestedObject(string jsonName)
+    [Test]
+    public void Dictionary1()
     {
-        var json = ReadUtil.LoadJSON(jsonName);
-        var obj = m_jsonMapper.ParseJson<SimpleNestedObject>(json);
-        var subObj = new SubObject(1, true);
-        var expected = new SimpleNestedObject("hello", new List<int> { 1, 2, 3 }, subObj);
+        var json = """{"a":1,"b":2}""";
+        var obj = m_jsonMapper.ParseJson<Dictionary<string, int>>(json);
+        var expected = new Dictionary<string, int> { { "a", 1 }, { "b", 2 } };
 
         obj.Should().BeEquivalentTo(expected);
     }

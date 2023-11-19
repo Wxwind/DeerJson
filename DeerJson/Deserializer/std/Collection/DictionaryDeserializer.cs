@@ -9,8 +9,8 @@ namespace DeerJson.Deserializer.std.Collection
         private Type m_keyType;
         private Type m_valueType;
 
-        private IDeserializer m_keyDeserializer;
-        private IDeserializer m_valueDeserializer;
+        private IKeyDeserializer m_keyDeserializer;
+        private IDeserializer    m_valueDeserializer;
 
         public DictionaryDeserializer(Type type, Type keyType, Type valueType)
         {
@@ -21,12 +21,25 @@ namespace DeerJson.Deserializer.std.Collection
 
         public override IDictionary Deserialize(JsonParser p, DeserializeContext ctx)
         {
-            throw new NotImplementedException();
+            p.GetObjectStart();
+            var o = Activator.CreateInstance(m_type) as IDictionary;
+
+            string name;
+
+            while ((name = p.GetMemberName()) != null)
+            {
+                var key = m_keyDeserializer.Deserialize(name, ctx);
+                var value = m_valueDeserializer.Deserialize(p, ctx);
+                o.Add(key, value);
+            }
+
+            p.GetObjectEnd();
+            return o;
         }
 
         public void Resolve(DeserializeContext ctx)
         {
-            m_keyDeserializer = ctx.FindDeserializer(m_keyType);
+            m_keyDeserializer = ctx.FindStdKeySerializer(m_keyType);
             m_valueDeserializer = ctx.FindDeserializer(m_valueType);
         }
     }

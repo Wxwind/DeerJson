@@ -25,6 +25,7 @@
 
         public void GetObjectStart()
         {
+            VerifyValueGet();
             Match(TokenType.LBRACE);
             m_parserContext = m_parserContext.NewObjectContext();
         }
@@ -60,13 +61,14 @@
 
         public void SkipMemberValue()
         {
+            VerifyValueGet();
             if (m_curToken.TokenType != TokenType.LBRACE && m_curToken.TokenType != TokenType.LBRACKET)
             {
                 InternalSkipValue();
                 return;
             }
 
-            var deep = 1;
+            var deep = 0;
 
             while (true)
             {
@@ -95,6 +97,7 @@
         private void InternalSkipValue()
         {
             var token = m_lexer.GetNextToken();
+            m_curToken = token;
         }
 
         public void GetObjectEnd()
@@ -111,10 +114,11 @@
 
         public void GetArrayStart()
         {
+            VerifyValueGet();
             Match(TokenType.LBRACKET);
             m_parserContext = m_parserContext.NewArrayContext();
         }
-
+        
         public void GetArrayEnd()
         {
             if (!m_parserContext.InArray())

@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using DeerJson.Attributes;
 
 namespace DeerJson.Util
 {
@@ -44,6 +46,12 @@ namespace DeerJson.Util
             var backingFieldName = $"<{pi.Name}>k__BackingField";
             return pi.DeclaringType?.GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
                 .FirstOrDefault(field => field.Name == backingFieldName);
+        }
+
+        public static bool IsIgnoreMember(MemberInfo info)
+        {
+            return Attribute.IsDefined(info, typeof(JsonIgnore)) ||
+                   Attribute.IsDefined(info, typeof(NonSerializedAttribute));
         }
     }
 }

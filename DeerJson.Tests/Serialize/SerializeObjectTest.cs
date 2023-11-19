@@ -40,4 +40,18 @@ public class SerializeObjectTest
 
         json.Should().Be(expected);
     }
+
+    [TestCase("SimpleNestedObject.json")]
+    public void SimpleNestedObject(string jsonName)
+    {
+        var expected = ReadUtil.LoadJSON(jsonName).Replace("\n", "").Replace(" ", "").Replace("\t", "")
+            .Replace("\r", "");
+
+        var a = new List<int> { 1, 2, 3 };
+        var subObj = new SubObject(1, true);
+        var obj = new SimpleNestedObject("hello", a, subObj);
+        var json = m_jsonMapper.ToJson(obj);
+
+        json.Should().Be(expected);
+    }
 }

@@ -7,8 +7,7 @@ namespace DeerJson.Tests;
 public class DeserializeObjectTest
 {
     private readonly JsonMapper m_jsonMapper = new();
-
-
+    
     [SetUp]
     public void Setup()
     {
@@ -37,5 +36,18 @@ public class DeserializeObjectTest
 
         //Assert.That(obj, Is.EqualTo(expected));
     }
+
+    [TestCase("SimpleNestedObject.json")]
+    public void SimpleNestedObject(string jsonName)
+    {
+        var json = ReadUtil.LoadJSON(jsonName);
+        var obj = m_jsonMapper.ParseJson<SimpleNestedObject>(json);
+        var subObj = new SubObject(1, true);
+        var expected = new SimpleNestedObject("hello", new List<int> { 1, 2, 3 }, subObj);
+
+        obj.Should().BeEquivalentTo(expected);
+    }
+
+
     
 }

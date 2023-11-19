@@ -1,4 +1,4 @@
-﻿namespace DeerJson.Deserializer.std
+﻿namespace DeerJson.Deserializer
 {
     public interface IDeserializer
     {

@@ -18,26 +18,16 @@ namespace DeerJson.Deserializer.std.Collection
         public override IList Deserialize(JsonParser p, DeserializeContext ctx)
         {
             var list = Activator.CreateInstance(m_type) as IList;
-            p.Match(TokenType.LBRACKET);
+
+            p.GetArrayStart();
 
             while (p.CurToken.TokenType != TokenType.RBRACKET)
             {
-                var el = Activator.CreateInstance(m_elementType);
-                el = m_elementDeserializer.Deserialize(p, ctx);
+                var el = m_elementDeserializer.Deserialize(p, ctx);
                 list.Add(el);
-
-                // skip comma after obj pair
-                if (p.HasToken(TokenType.COMMA))
-                {
-                    p.Match(TokenType.COMMA);
-                    if (p.HasToken(TokenType.RBRACKET))
-                    {
-                        throw new JsonException("trailing comma is not allowed");
-                    }
-                }
             }
 
-            p.Match(TokenType.RBRACKET);
+            p.GetArrayEnd();
             
             return list;
         }

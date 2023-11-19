@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DeerJson.Deserializer.std;
+using DeerJson.Deserializer.std.Key;
 using DeerJson.Node;
 
 namespace DeerJson.Deserializer
@@ -17,6 +18,31 @@ namespace DeerJson.Deserializer
 
 
         private readonly DeserializerFactory m_factory = new DeserializerFactory();
+
+        private readonly Dictionary<Type, IKeyDeserializer> m_cachedKeyDeserializerDict =
+            new Dictionary<Type, IKeyDeserializer>();
+
+        public IKeyDeserializer FindStdKeySerializer(Type type)
+        {
+            if (m_cachedKeyDeserializerDict.TryGetValue(type, out var deser)) return deser;
+
+            if (type.IsEnum)
+            {
+                var underlyingType = Enum.GetUnderlyingType(type);
+                var d = new EnumKeyDeserializer(type, underlyingType);
+                m_cachedKeyDeserializerDict.Add(type, d);
+                return d;
+            }
+
+            if (type.IsPrimitive || type == typeof(string))
+            {
+                var d = new StdKeyDeserializer(type);
+                m_cachedKeyDeserializerDict.Add(type, d);
+                return d;
+            }
+
+            throw new JsonException($"not support key of type {type}");
+        }
 
         public IDeserializer FindOrCreateDeserializer(DeserializeContext ctx, Type type)
         {

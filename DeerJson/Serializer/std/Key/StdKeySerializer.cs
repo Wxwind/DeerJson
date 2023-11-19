@@ -1,8 +1,8 @@
 ﻿namespace DeerJson.Serializer.std.Key
 {
-    public class StringKeySerializer : JsonSerializer<object>
+    public class StdKeySerializer : JsonSerializer<object>
     {
-        public static StringKeySerializer Instance = new StringKeySerializer();
+        public static StdKeySerializer Instance = new StdKeySerializer();
 
         public override void Serialize(object value, JsonGenerator gen, SerializeContext ctx)
         {

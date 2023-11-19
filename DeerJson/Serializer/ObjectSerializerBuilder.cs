@@ -26,6 +26,11 @@ namespace DeerJson.Serializer
             //find fields
             foreach (var fi in fis)
             {
+                if (TypeUtil.IsIgnoreMember(fi))
+                {
+                    continue;
+                }
+                
                 if (TypeUtil.IsAutoPropertyBackingField(fi))
                 {
                     continue;
@@ -38,6 +43,11 @@ namespace DeerJson.Serializer
             var pis = m_type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             foreach (var pi in pis)
             {
+                if (TypeUtil.IsIgnoreMember(pi))
+                {
+                    continue;
+                }
+                
                 if (TypeUtil.IsAutoProperty(pi))
                 {
                     var writableProperty = new WritableProperty(pi.Name, pi);
