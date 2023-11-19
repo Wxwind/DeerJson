@@ -7,8 +7,6 @@
 
         DESERIALIZE_FAIL_ON_UNKNOWN_PROPERTIES,
         DESERIALIZE_FAIL_ON_TRAILING_TOKENS
-
-
     }
 
     public static class JsonFeatureExtension

@@ -17,7 +17,7 @@ public class DeserializeAttributeTest
     public void SimpleNestedObjectWithIgnore(string jsonName)
     {
         var json = ReadUtil.LoadJSON(jsonName);
-        var obj = m_jsonMapper.ParseJson<SimpleNestedObjectWithIgnore>(json);
+        var obj = JsonMapper.Default.ParseJson<SimpleNestedObjectWithIgnore>(json);
         var expected = new SimpleNestedObjectWithIgnore(null, new List<int> { 1, 2, 3 }, null);
 
         obj.Should().BeEquivalentTo(expected);
