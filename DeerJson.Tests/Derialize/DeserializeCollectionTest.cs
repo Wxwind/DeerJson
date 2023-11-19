@@ -1,4 +1,5 @@
-﻿using DeerJson.Tests.Util;
+﻿using DeerJson.Tests.Type;
+using DeerJson.Tests.Util;
 using FluentAssertions;
 
 namespace DeerJson.Tests;
@@ -40,6 +41,26 @@ public class DeserializeCollectionTest
         var json = """{"a":1,"b":2}""";
         var obj = m_jsonMapper.ParseJson<Dictionary<string, int>>(json);
         var expected = new Dictionary<string, int> { { "a", 1 }, { "b", 2 } };
+
+        obj.Should().BeEquivalentTo(expected);
+    }
+
+    [Test]
+    public void DictionaryEnumKeyByName()
+    {
+        var json = """{"Tuesday":1,"Friday":2}""";
+        var obj = m_jsonMapper.ParseJson<Dictionary<Days, int>>(json);
+        var expected = new Dictionary<Days, int> { { Days.Tuesday, 1 }, { Days.Friday, 2 } };
+
+        obj.Should().BeEquivalentTo(expected);
+    }
+
+    [Test]
+    public void DictionaryEnumKeyByBaseValue()
+    {
+        var json = """{"2":1,"5":2}""";
+        var obj = m_jsonMapper.ParseJson<Dictionary<Days, int>>(json);
+        var expected = new Dictionary<Days, int> { { Days.Tuesday, 1 }, { Days.Friday, 2 } };
 
         obj.Should().BeEquivalentTo(expected);
     }

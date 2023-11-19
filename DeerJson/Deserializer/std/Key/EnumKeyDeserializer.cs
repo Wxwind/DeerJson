@@ -17,9 +17,9 @@ namespace DeerJson.Deserializer.std.Key
 
         public override object Deserialize(string key, DeserializeContext ctx)
         {
+            // may be use enum name?
             if (Enum.IsDefined(m_type, key))
             {
-                // may be use enum name?
                 foreach (var name in m_enumNameList)
                 {
                     if (name == key)
@@ -27,9 +27,12 @@ namespace DeerJson.Deserializer.std.Key
                         return Enum.Parse(m_type, key);
                     }
                 }
+            }
 
-                // or may use enum constant's underlying type like int?
-                var num = Convert.ChangeType(key, m_underLyingType);
+            // or may use enum constant's underlying type like int?
+            var num = Convert.ChangeType(key, m_underLyingType);
+            if (Enum.IsDefined(m_type, num))
+            {
                 return Enum.ToObject(m_type, num);
             }
 
