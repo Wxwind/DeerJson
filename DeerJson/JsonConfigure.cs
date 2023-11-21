@@ -4,6 +4,15 @@
     {
         private int m_mask;
 
+        public JsonConfigure()
+        {
+        }
+
+        private JsonConfigure(int mask)
+        {
+            m_mask = mask;
+        }
+
         public bool IsEnabled(JsonFeature f)
         {
             return (m_mask & f.GetMask()) != 0;

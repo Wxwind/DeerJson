@@ -13,10 +13,10 @@ public class DeserializeObjectTest
     {
     }
 
-    [TestCase("PlainObj.json")]
-    public void PlainObj(string jsonName)
+    [Test]
+    public void PlainObj()
     {
-        var json = ReadUtil.LoadJSON(jsonName);
+        var json = ReadUtil.LoadJSON("PlainObj.json");
         var obj = m_jsonMapper.ParseJson<PlainObj>(json);
         var expected = new PlainObj("wxwind", true, 123, 'h');
 
@@ -25,10 +25,10 @@ public class DeserializeObjectTest
         //Assert.That(obj, Is.EqualTo(expected));
     }
 
-    [TestCase("PlainObj.json")]
-    public void PlainObjWithAutoProp(string jsonName)
+    [Test]
+    public void PlainObjWithAutoProp()
     {
-        var json = ReadUtil.LoadJSON(jsonName);
+        var json = ReadUtil.LoadJSON("PlainObj.json");
         var obj = m_jsonMapper.ParseJson<PlainObjWithAutoProp>(json);
         var expected = new PlainObjWithAutoProp("wxwind", true, 123, 'h');
 
@@ -37,17 +37,14 @@ public class DeserializeObjectTest
         //Assert.That(obj, Is.EqualTo(expected));
     }
 
-    [TestCase("SimpleNestedObject.json")]
-    public void SimpleNestedObject(string jsonName)
+    [Test]
+    public void SimpleNestedObject()
     {
-        var json = ReadUtil.LoadJSON(jsonName);
+        var json = ReadUtil.LoadJSON("SimpleNestedObject.json");
         var obj = m_jsonMapper.ParseJson<SimpleNestedObject>(json);
         var subObj = new SubObject(1, true);
         var expected = new SimpleNestedObject("hello", new List<int> { 1, 2, 3 }, subObj);
 
         obj.Should().BeEquivalentTo(expected);
     }
-
-
-    
 }

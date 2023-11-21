@@ -1,4 +1,5 @@
 ﻿using System;
+using DeerJson.Deserializer.std;
 
 namespace DeerJson.Deserializer
 {
@@ -17,9 +18,10 @@ namespace DeerJson.Deserializer
             m_configure = cfg;
         }
 
-        public DeserializeContext CreateInstance(JsonConfigure cfg)
+        private DeserializeContext(JsonConfigure cfg, DeserializerCache cache)
         {
-            return new DeserializeContext(cfg);
+            m_cache = cache;
+            m_configure = cfg;
         }
 
         public bool IsEnabled(JsonFeature f)
@@ -35,6 +37,11 @@ namespace DeerJson.Deserializer
         public IDeserializer FindDeserializer(Type type)
         {
             return m_cache.FindOrCreateDeserializer(this, type);
+        }
+
+        public void AddCustomDeserializer<T>(JsonDeserializer<T> deserializer)
+        {
+            m_cache.AddCustomDeserializer(deserializer);
         }
     }
 }

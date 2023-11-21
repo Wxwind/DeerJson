@@ -1,4 +1,6 @@
-﻿namespace DeerJson.Tests;
+﻿using DeerJson.Tests.Util;
+
+namespace DeerJson.Tests;
 
 public class ParserJsonObjectTest
 {
@@ -9,13 +11,12 @@ public class ParserJsonObjectTest
     {
     }
 
-    [TestCase("SimpleObject.json")]
-    public void Parser_Example1(string jsonName)
+    [Test]
+    public void Parser_Example1()
     {
         try
         {
-            var filePath = Path.Combine("../../../TestJson", jsonName);
-            var json = File.ReadAllText(filePath);
+            var json = ReadUtil.LoadJSON("SimpleObject.json");
             var tree = m_jsonMapper.ParseToTree(json);
             Console.WriteLine(tree.ToString());
         }

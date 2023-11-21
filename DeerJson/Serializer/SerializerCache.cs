@@ -8,6 +8,9 @@ namespace DeerJson.Serializer
 {
     public class SerializerCache
     {
+        private readonly Dictionary<Type, ISerializer> m_customSerializerDict =
+            new Dictionary<Type, ISerializer>();
+        
         private readonly Dictionary<Type, ISerializer> m_cachedSerializerDict =
             new Dictionary<Type, ISerializer>();
 
@@ -33,6 +36,8 @@ namespace DeerJson.Serializer
 
         public ISerializer FindOrCreateSerializer(SerializeContext ctx, Type type)
         {
+            if (m_customSerializerDict.TryGetValue(type, out var serializer)) return serializer;
+
             if (m_cachedSerializerDict.TryGetValue(type, out var ser)) return ser;
 
             // may be in creating deserializer
@@ -118,6 +123,11 @@ namespace DeerJson.Serializer
             }
 
             throw new JsonException($"not supported serialize of type '{type}'");
+        }
+
+        public void AddCustomSerializer<T>(JsonSerializer<T> serializer)
+        {
+            m_customSerializerDict.Add(typeof(T), serializer);
         }
     }
 }

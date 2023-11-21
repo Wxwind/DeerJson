@@ -14,10 +14,11 @@ public class SerializeAttributeTest
         m_jsonMapper.Enable(JsonFeature.SERIALIZE_UNDERLYING_TYPE_FOR_ENUM);
     }
 
-    [TestCase("SimpleNestedObjectWithIgnore.json")]
-    public void SimpleNestedObjectWithIgnore(string jsonName)
+    [Test]
+    public void SimpleNestedObjectWithIgnore()
     {
-        var expected = ReadUtil.LoadJSON(jsonName).Replace("\n", "").Replace(" ", "").Replace("\t", "")
+        var expected = ReadUtil.LoadJSON("SimpleNestedObjectWithIgnore.json").Replace("\n", "").Replace(" ", "")
+            .Replace("\t", "")
             .Replace("\r", "");
         var subObj = new SubObject(1, true);
         var obj = new SimpleNestedObjectWithIgnore("hello", new List<int> { 1, 2, 3 }, subObj);
@@ -25,4 +26,5 @@ public class SerializeAttributeTest
 
         json.Should().Be(expected);
     }
+
 }

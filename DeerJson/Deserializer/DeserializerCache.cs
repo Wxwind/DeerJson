@@ -9,6 +9,9 @@ namespace DeerJson.Deserializer
 {
     public class DeserializerCache
     {
+        private readonly Dictionary<Type, IDeserializer> m_customDeserializerDict =
+            new Dictionary<Type, IDeserializer>();
+        
         private readonly Dictionary<Type, IDeserializer> m_cachedDeserializerDict =
             new Dictionary<Type, IDeserializer>();
 
@@ -46,6 +49,8 @@ namespace DeerJson.Deserializer
 
         public IDeserializer FindOrCreateDeserializer(DeserializeContext ctx, Type type)
         {
+            if (m_customDeserializerDict.TryGetValue(type, out var deserializer)) return deserializer;
+
             if (m_cachedDeserializerDict.TryGetValue(type, out var deser)) return deser;
 
             // may be in creating deserializer
@@ -136,5 +141,11 @@ namespace DeerJson.Deserializer
 
             throw new JsonException($"not supported deserialize of type '{type}'");
         }
+
+        public void AddCustomDeserializer<T>(JsonDeserializer<T> deserializer)
+        {
+            m_customDeserializerDict.Add(typeof(T), deserializer);
+        }
+        
     }
 }

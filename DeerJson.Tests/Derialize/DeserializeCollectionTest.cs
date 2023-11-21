@@ -14,10 +14,10 @@ public class DeserializeCollectionTest
     {
     }
 
-    [TestCase("IntArray.json")]
-    public void IntArray(string jsonName)
+    [Test]
+    public void IntArray()
     {
-        var json = ReadUtil.LoadJSON(jsonName);
+        var json = ReadUtil.LoadJSON("IntArray.json");
         var obj = m_jsonMapper.ParseJson<int[]>(json);
         var expected = new[] { 1, 2, 3 };
 
@@ -25,10 +25,10 @@ public class DeserializeCollectionTest
     }
 
 
-    [TestCase("IntArray.json")]
-    public void IntList(string jsonName)
+    [Test]
+    public void IntList()
     {
-        var json = ReadUtil.LoadJSON(jsonName);
+        var json = ReadUtil.LoadJSON("IntArray.json");
         var obj = m_jsonMapper.ParseJson<List<int>>(json);
         var expected = new List<int> { 1, 2, 3 };
 

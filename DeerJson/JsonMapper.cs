@@ -1,5 +1,6 @@
 ﻿using System;
 using DeerJson.Deserializer;
+using DeerJson.Deserializer.std;
 using DeerJson.Node;
 using DeerJson.Serializer;
 
@@ -7,14 +8,17 @@ namespace DeerJson
 {
     public class JsonMapper
     {
-        private readonly DeserializeContext m_deserializeContext = new DeserializeContext();
-        private readonly SerializeContext   m_serializeContext   = new SerializeContext();
-        private readonly JsonConfigure      m_configure          = new JsonConfigure();
+        private readonly DeserializeContext m_deserializeContext;
+        private readonly SerializeContext   m_serializeContext;
+        private readonly JsonConfigure      m_configure;
 
         public static JsonMapper Default = new JsonMapper();
 
         public JsonMapper()
         {
+            m_configure = new JsonConfigure();
+            m_deserializeContext = new DeserializeContext(m_configure);
+            m_serializeContext = new SerializeContext(m_configure);
         }
 
         // Configure
@@ -49,10 +53,9 @@ namespace DeerJson
 
         private object ParseJson(Type type, string json)
         {
-            var ctx = m_deserializeContext.CreateInstance(m_configure);
-            var dese = ctx.FindDeserializer(type);
+            var deser = m_deserializeContext.FindDeserializer(type);
             var p = new JsonParser(json);
-            var res = dese.Deserialize(p, ctx);
+            var res = deser.Deserialize(p, m_deserializeContext);
             if (m_configure.IsEnabled(JsonFeature.DESERIALIZE_FAIL_ON_TRAILING_TOKENS))
             {
                 if (p.HasTrailingTokens())
@@ -74,14 +77,23 @@ namespace DeerJson
         // Serialize
         public string ToJson(object value)
         {
-            var ctx = m_serializeContext.CreateInstance(m_configure);
             using (var gen = new JsonGenerator())
             {
                 var ser = m_serializeContext.FindSerializer(value.GetType());
-                ser.Serialize(value, gen, ctx);
+                ser.Serialize(value, gen, m_serializeContext);
                 return gen.GetValueAsString();
             }
         }
-        
+
+        // custom serializer and deserializer
+        public void AddSerializer<T>(JsonSerializer<T> serializer)
+        {
+            m_serializeContext.AddCustomSerializer(serializer);
+        }
+
+        public void AddDeserializer<T>(JsonDeserializer<T> deserializer)
+        {
+            m_deserializeContext.AddCustomDeserializer(deserializer);
+        }
     }
 }

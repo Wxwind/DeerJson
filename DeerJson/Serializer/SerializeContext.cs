@@ -4,10 +4,10 @@ namespace DeerJson.Serializer
 {
     public class SerializeContext
     {
-        private readonly SerializerCache m_cache = new SerializerCache();
+        private readonly SerializerCache m_cache;
         private readonly JsonConfigure   m_configure;
 
-        public SerializeContext() : this(null)
+        public SerializeContext() : this(null, null)
         {
         }
 
@@ -17,10 +17,12 @@ namespace DeerJson.Serializer
             m_configure = cfg;
         }
 
-        public SerializeContext CreateInstance(JsonConfigure cfg)
+        private SerializeContext(JsonConfigure cfg, SerializerCache cache)
         {
-            return new SerializeContext(cfg);
+            m_cache = cache;
+            m_configure = cfg;
         }
+        
 
         public bool IsEnabled(JsonFeature f)
         {
@@ -36,6 +38,11 @@ namespace DeerJson.Serializer
         public ISerializer FindStdKeySerializer(Type type)
         {
             return m_cache.FindStdKeySerializer(type);
+        }
+
+        public void AddCustomSerializer<T>(JsonSerializer<T> serializer)
+        {
+            m_cache.AddCustomSerializer(serializer);
         }
     }
 }

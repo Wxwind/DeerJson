@@ -28,10 +28,10 @@ public class SerializeObjectTest
         json.Should().Be(expected);
     }
 
-    [TestCase("PlainObj.json")]
-    public void PlainObjWithAutoProp(string jsonName)
+    [Test]
+    public void PlainObjWithAutoProp()
     {
-        var expected = ReadUtil.LoadJSON(jsonName).Replace("\n", "").Replace(" ", "").Replace("\t", "")
+        var expected = ReadUtil.LoadJSON("PlainObj.json").Replace("\n", "").Replace(" ", "").Replace("\t", "")
             .Replace("\r", "");
 
 
@@ -41,10 +41,11 @@ public class SerializeObjectTest
         json.Should().Be(expected);
     }
 
-    [TestCase("SimpleNestedObject.json")]
-    public void SimpleNestedObject(string jsonName)
+    [Test]
+    public void SimpleNestedObject()
     {
-        var expected = ReadUtil.LoadJSON(jsonName).Replace("\n", "").Replace(" ", "").Replace("\t", "")
+        var expected = ReadUtil.LoadJSON("SimpleNestedObject.json").Replace("\n", "").Replace(" ", "")
+            .Replace("\t", "")
             .Replace("\r", "");
 
         var a = new List<int> { 1, 2, 3 };

@@ -37,10 +37,11 @@ namespace DeerJson.Deserializer.std
                     {
                         p.SkipMemberValue();
                         continue;
-                    } 
-                    if (!ctx.IsEnabled(JsonFeature.DESERIALIZE_FAIL_ON_UNKNOWN_PROPERTIES))
+                    }
+
+                    if (ctx.IsEnabled(JsonFeature.DESERIALIZE_FAIL_ON_UNKNOWN_PROPERTIES))
                     {
-                        throw new JsonException($"serializing {m_type.Name}: missing filed {name}'.");
+                        throw new JsonException($"serializing {m_type.Name}: missing field '{name}'.");
                     }
                     else p.SkipMemberValue();
                 }

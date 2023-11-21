@@ -19,7 +19,7 @@ var obj = JsonMapper.Default.ParseJson<Student>(json);
 var obj = json.ParseJson<Student>() // Equals JsonMapper.Default.ParseJson
 
 // or create your JsonMapper
-var m_jsonMapper = new JsonMapper();
+var jsonMapper = new JsonMapper();
 ```
 
 
@@ -40,7 +40,7 @@ JsonMapper.Configure(JsonFeature f, bool enabled)
 
 - **SERIALIZE_ORDER_BY_NAME**
 
-  members will be ordered by name in final JSON.(Used in unit test)
+  Members will be ordered by name in final JSON.(Used in unit test)
 
 - **SERIALIZE_UNDERLYING_TYPE_FOR_ENUM**
 
@@ -71,7 +71,7 @@ JsonMapper.Configure(JsonFeature f, bool enabled)
 
 ## Attributes
 
-- **[JsonIgnore] **
+- **[JsonIgnore]**
 
   Ignore specified auto properties or fields when serializing and deserializing.
 
@@ -93,4 +93,102 @@ JsonMapper.Configure(JsonFeature f, bool enabled)
   var res = s.ToJson(); // {"age":1}
   ```
 
+## Custom serializer and deserializer
+
+- **Serializer**
+
+  1. Make your own Serializer class extends from JsonSerializer and implement Serialize(). Here is an example.
+
+     ```csharp
+     public class SimpleNestedObjectSerializer : JsonSerializer<SimpleNestedObject>
+     {
+         public override void Serialize(SimpleNestedObject value, JsonGenerator gen, SerializeContext ctx)
+         {
+             gen.WriteObjectStart();
+     
+             gen.WriteMemberName("str2");
+             gen.WriteString(value.str);
+     
+             gen.WriteMemberName("arr2");
+             gen.WriteArrayStart();
+             gen.WriteNumber(1);
+             gen.WriteNumber(2);
+             gen.WriteNumber(3);
+             gen.WriteArrayEnd();
+     
+             gen.WriteObjectEnd();
+         }
+     }
+     ```
+
+  2. Register in jsonMapper.
+
+     ```csharp
+     m_jsonMapper.AddSerializer(new SimpleNestedObjectSerializer());
+     ```
+
+- **Deserializer**
+  1. Make your own Deserializer class extends from JsonDeserializer and implement Deserialize(). Here is an example.
+
+     ```csharp
+     public class SimpleNestedObjectDeserializer : JsonDeserializer<SimpleNestedObject>
+     {
+         public override SimpleNestedObject Deserialize(JsonParser p, DeserializeContext ctx)
+         {
+             p.GetObjectStart();
+             var o = new SimpleNestedObject();
+     
+     
+             string name;
+     
+             while ((name = p.GetMemberName()) != null)
+             {
+                 switch (name)
+                 {
+                     case "str":
+                         o.str = "hi";
+                         p.SkipMemberValue();
+                         break;
+                     case "numArr":
+                         var array = new List<int>();
+                         p.GetArrayStart();
+                         while (p.CurToken.TokenType != TokenType.RBRACKET)
+                         {
+                             var el = Convert.ToInt32(p.GetNumber());
+                             array.Add(el);
+                         }
+     
+                         p.GetArrayEnd();
+                         o.numArr = array;
+                         break;
+                     case "subObj":
+                         p.GetObjectStart();
+                         while ((name = p.GetMemberName()) != null)
+                         {
+                             switch (name)
+                             {
+                                 case "subNum":
+                                     o.subObj.subNum = Convert.ToInt32(p.GetNumber());
+                                     break;
+                                 case "isObj":
+                                     o.subObj.isObj = p.GetBool();
+                                     break;
+                             }
+                         }
+     
+                         p.GetObjectEnd();
+                         break;
+                 }
+             }
+     
+             p.GetObjectEnd();
+             return o;
+         }
+     }
+     ```
   
+  2. Register in jsonMapper.
+  
+     ```csharp
+     m_jsonMapper.AddDeserializer(new SimpleNestedObjectDeserializer());
+     ```

@@ -4,12 +4,13 @@ namespace DeerJson.Tests.Type;
 
 public class SimpleNestedObject : IEquatable<SimpleNestedObject>
 {
-    private string    str;
-    private List<int> numArr;
-    private SubObject subObj;
+    public string    str;
+    public List<int> numArr;
+    public SubObject subObj;
 
     public SimpleNestedObject()
     {
+        subObj = new SubObject();
     }
 
     public SimpleNestedObject(string str, List<int> numArr, SubObject subObj)
@@ -52,8 +53,8 @@ public class SimpleNestedObject : IEquatable<SimpleNestedObject>
 
 public class SubObject : IEquatable<SubObject>
 {
-    private int  subNum;
-    public  bool isObj;
+    public int  subNum;
+    public bool isObj;
 
     public SubObject()
     {
