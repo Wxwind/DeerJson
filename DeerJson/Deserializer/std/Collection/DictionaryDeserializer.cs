@@ -19,6 +19,11 @@ namespace DeerJson.Deserializer.std.Collection
             m_valueType = valueType;
         }
 
+        public override IDictionary GetNullValue(DeserializeContext ctx)
+        {
+            return null;
+        }
+
         public override IDictionary Deserialize(JsonParser p, DeserializeContext ctx)
         {
             p.GetObjectStart();

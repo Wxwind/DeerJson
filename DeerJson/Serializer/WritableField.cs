@@ -25,15 +25,15 @@ namespace DeerJson.Serializer
 
         public void SerializeAndWrite(JsonGenerator p, object obj, SerializeContext ctx)
         {
-          
             p.WriteMemberName(Name);
-            if (obj == null)
+            
+            var value = m_fieldInfo.GetValue(obj);
+            if (value == null)
             {
                 p.WriteNull();
                 return;
             }
-
-            var value = m_fieldInfo.GetValue(obj);
+            
             m_valueSerializer.Serialize(value, p, ctx);
         }
     }

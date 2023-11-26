@@ -61,7 +61,7 @@ namespace DeerJson
                 if (p.HasTrailingTokens())
                 {
                     throw new JsonException(
-                        $"Trailing token {p.CurToken.Value} is not allowed when DESERIALIZE_FAIL_ON_TRAILING_TOKENS is enabled");
+                        $"Trailing token is not allowed when DESERIALIZE_FAIL_ON_TRAILING_TOKENS is enabled");
                 }
             }
 

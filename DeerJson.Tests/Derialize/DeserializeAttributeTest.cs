@@ -88,4 +88,20 @@ public class DeserializeAttributeTest
 
         obj.Should().BeEquivalentTo(expected);
     }
+
+    [Test]
+    public void NullObjMembersFailOnNullForprimitives()
+    {
+        m_jsonMapper.Enable(JsonFeature.DESERIALIZE_FAIL_ON_NULL_FOR_PRIMITIVES);
+        var json = ReadUtil.LoadJSON("NullObjWithAllNull.json");
+
+
+        var act = () =>
+        {
+            var obj = m_jsonMapper.ParseJson<NullObj>(json);
+        };
+
+        act.Should().Throw<JsonException>()
+            .Where(e => e.Message.StartsWith("cannot deserialize null for primitive type."));
+    }
 }

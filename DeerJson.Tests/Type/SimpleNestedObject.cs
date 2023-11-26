@@ -24,12 +24,18 @@ public class SimpleNestedObject : IEquatable<SimpleNestedObject>
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
-        if (str == other.str && numArr.SequenceEqual(other.numArr) && subObj == null && other.subObj == null)
+        if ((numArr == null && other.numArr != null) || (numArr != null && other.numArr == null))
         {
-            return true;
+            return false;
         }
-        
-        return str == other.str && numArr.SequenceEqual(other.numArr) && subObj.Equals(other.subObj);
+
+        if ((subObj == null && other.subObj != null) || (subObj != null && other.subObj == null))
+        {
+            return false;
+        }
+
+        return str == other.str && (numArr == other.numArr || numArr.SequenceEqual(other.numArr)) &&
+               (subObj == other.subObj || subObj.Equals(other.subObj));
     }
 
     public override bool Equals(object? obj)

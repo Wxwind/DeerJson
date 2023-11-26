@@ -3,24 +3,29 @@
     public class JsonParser
     {
         private readonly Lexer m_lexer;
-        private          Token m_curToken;
-
-        public Token CurToken => m_curToken;
+        
         public int CurLine => m_lexer.CurLine;
+        public TokenType CurToken => m_lexer.CurToken;
+        public string CurTokenValue => m_lexer.CurTokenValue;
 
         private ParserContext m_parserContext = new ParserContext();
 
         public JsonParser(string json)
         {
             m_lexer = new Lexer(json);
-            m_curToken = m_lexer.GetNextToken();
+            MoveNext();
+        }
+
+        public void MoveNext()
+        {
+            m_lexer.GetNextToken();
         }
 
         // throw error if token unexpected, move next otherwise
         public void Match(TokenType type)
         {
-            if (m_curToken.TokenType == type) m_curToken = m_lexer.GetNextToken();
-            else ReportDetailError($"syntax error: expected '{type}' but get '{m_curToken.TokenType}'");
+            if (CurToken == type) MoveNext();
+            else ReportDetailError($"syntax error: expected '{type}' but get '{CurToken}'");
         }
 
         public void GetObjectStart()
@@ -56,13 +61,14 @@
             }
 
             var propName = InternalGetMemberName();
+            Match(TokenType.COLON);
             return propName;
         }
 
         public void SkipMemberValue()
         {
             VerifyValueGet();
-            if (m_curToken.TokenType != TokenType.LBRACE && m_curToken.TokenType != TokenType.LBRACKET)
+            if (CurToken != TokenType.LBRACE && CurToken != TokenType.LBRACKET)
             {
                 InternalSkipValue();
                 return;
@@ -72,32 +78,31 @@
 
             while (true)
             {
-                if (m_curToken.TokenType == TokenType.LBRACE || m_curToken.TokenType == TokenType.LBRACKET)
+                if (CurToken == TokenType.LBRACE || CurToken == TokenType.LBRACKET)
                 {
                     deep++;
                 }
-                else if (m_curToken.TokenType == TokenType.RBRACE || m_curToken.TokenType == TokenType.RBRACKET)
+                else if (CurToken == TokenType.RBRACE || CurToken == TokenType.RBRACKET)
                 {
                     if (--deep == 0)
                     {
-                        m_curToken = m_lexer.GetNextToken();
+                        MoveNext();
                         return;
                     }
                 }
-                else if (m_curToken.TokenType == TokenType.EOF)
+                else if (CurToken == TokenType.EOF)
                 {
                     ReportDetailError("not enough end token(']','}') while skip children");
                     return;
                 }
 
-                m_curToken = m_lexer.GetNextToken();
+                MoveNext();
             }
         }
 
         private void InternalSkipValue()
         {
-            var token = m_lexer.GetNextToken();
-            m_curToken = token;
+            m_lexer.GetNextToken();
         }
 
         public void GetObjectEnd()
@@ -133,85 +138,92 @@
 
         private string InternalGetMemberName()
         {
-            if (m_curToken.TokenType == TokenType.STRING)
+            if (CurToken == TokenType.STRING)
             {
-                var str = m_curToken.Value;
-                m_curToken = m_lexer.GetNextToken();
+                var str = CurTokenValue;
+                MoveNext();
                 return str;
             }
 
-            ReportDetailError($"syntax error: expected '{TokenType.STRING}' but get '{m_curToken.TokenType}'");
+            ReportDetailError($"syntax error: expected '{TokenType.STRING}' but get '{CurToken}'");
             return default;
         }
 
-        public Token GetValue()
+        public void GetValue()
         {
             VerifyValueGet();
-            if (m_curToken.TokenType == TokenType.STRING || m_curToken.TokenType == TokenType.NUMBER ||
-                m_curToken.TokenType == TokenType.NULL ||
-                m_curToken.TokenType == TokenType.TRUE || m_curToken.TokenType == TokenType.FALSE)
+            if (CurToken == TokenType.STRING || CurToken == TokenType.NUMBER ||
+                CurToken == TokenType.NULL ||
+                CurToken == TokenType.TRUE || CurToken == TokenType.FALSE)
             {
-                var t = m_curToken;
-                m_curToken = m_lexer.GetNextToken();
-                return t;
+                MoveNext();
+        
             }
 
             ReportDetailError(
-                $"syntax error: expected '{TokenType.STRING}' | '{TokenType.NUMBER}' | '{TokenType.TRUE}' | '{TokenType.FALSE}' | '{TokenType.NULL}' but get '{m_curToken.TokenType}'");
-            return default;
+                $"syntax error: expected '{TokenType.STRING}' | '{TokenType.NUMBER}' | '{TokenType.TRUE}' | '{TokenType.FALSE}' | '{TokenType.NULL}' but get '{CurToken}'");
         }
         
         public string GetString()
         {
             VerifyValueGet();
-            if (m_curToken.TokenType == TokenType.STRING)
+            if (CurToken == TokenType.STRING)
             {
-                var str = m_curToken.Value;
-                m_curToken = m_lexer.GetNextToken();
+                var str = CurTokenValue;
+                MoveNext();
                 return str;
             }
 
-            ReportDetailError($"syntax error: expected '{TokenType.STRING}' but get '{m_curToken.TokenType}'");
+            ReportDetailError($"syntax error: expected '{TokenType.STRING}' but get '{CurToken}'");
             return default;
         }
 
         public string GetNumber()
         {
             VerifyValueGet();
-            if (m_curToken.TokenType == TokenType.NUMBER)
+            if (CurToken == TokenType.NUMBER)
             {
-                var str = m_curToken.Value;
-                m_curToken = m_lexer.GetNextToken();
+                var str = CurTokenValue;
+                MoveNext();
                 return str;
             }
 
-            ReportDetailError($"syntax error: expected '{TokenType.NUMBER}' but get '{m_curToken.TokenType}'");
+            ReportDetailError($"syntax error: expected '{TokenType.NUMBER}' but get '{CurToken}'");
             return default;
         }
 
         public bool GetBool()
         {
             VerifyValueGet();
-            if (m_curToken.TokenType == TokenType.TRUE)
+            if (CurToken == TokenType.TRUE)
             {
-                m_curToken = m_lexer.GetNextToken();
+                MoveNext();
                 return true;
             }
 
-            if (m_curToken.TokenType == TokenType.FALSE)
+            if (CurToken == TokenType.FALSE)
             {
-                m_curToken = m_lexer.GetNextToken();
+                MoveNext();
                 return false;
             }
 
-            ReportDetailError($"syntax error: expected 'True or False' but get '{m_curToken.TokenType}'");
+            ReportDetailError($"syntax error: expected 'True or False' but get '{CurToken}'");
             return default;
+        }
+
+        public void GetNull()
+        {
+            VerifyValueGet();
+            if (HasToken(TokenType.NULL))
+            {
+                Match(TokenType.NULL);
+            }
         }
 
         // return true if token expected
         public bool HasToken(TokenType type)
         {
-            return m_curToken.TokenType == type;
+            return CurToken == type;
         }
 
         public bool HasTrailingTokens()
@@ -224,15 +236,12 @@
             var status = m_parserContext.OnBeforeGetValue();
             switch (status)
             {
-                case ParserContext.Status.OK_NEED_COLON:
-                    Match(TokenType.COLON);
-                    break;
                 case ParserContext.Status.OK_NEED_COMMA:
                     Match(TokenType.COMMA);
                     break;
                 case ParserContext.Status.EXPECT_NAME:
                     throw new JsonException(
-                        $"must call GetMemberName() after GetValueAsXXX() or GetXXX() in context {m_parserContext.CurContextType}");
+                        $"must call GetMemberName() before GetValueAsXXX() or GetXXX() in context {m_parserContext.CurContextType}");
                 default:
                     break;
             }
@@ -242,5 +251,6 @@
         {
             throw new JsonException($"parser error: {error}. \n In line {m_lexer.CurLine}");
         }
+        
     }
 }

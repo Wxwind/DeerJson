@@ -20,8 +20,8 @@
 
         private readonly ParserContext m_parent;
 
-        private int  m_index          = 0;
-        private bool m_hasWrittenName = false;
+        private int  m_index         = 0;
+        private bool m_hasParsedName = false;
 
         public ContextType CurContextType { get; }
 
@@ -38,12 +38,12 @@
 
         public Status OnBeforeGetMemberName()
         {
-            if (m_hasWrittenName)
+            if (m_hasParsedName)
             {
                 return Status.EXPECT_VALUE;
             }
 
-            m_hasWrittenName = true;
+            m_hasParsedName = true;
             return m_index == 0 ? Status.OK : Status.OK_NEED_COMMA;
         }
 
@@ -51,12 +51,12 @@
         {
             if (CurContextType == ContextType.OBJECT)
             {
-                if (!m_hasWrittenName)
+                if (!m_hasParsedName)
                 {
                     return Status.EXPECT_NAME;
                 }
 
-                m_hasWrittenName = false;
+                m_hasParsedName = false;
                 m_index++;
                 return Status.OK_NEED_COLON;
             }

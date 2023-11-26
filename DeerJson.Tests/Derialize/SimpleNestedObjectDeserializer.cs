@@ -6,12 +6,16 @@ namespace DeerJson.Tests;
 
 public class SimpleNestedObjectDeserializer : JsonDeserializer<SimpleNestedObject>
 {
+    public override SimpleNestedObject GetNullValue(DeserializeContext ctx)
+    {
+        return null;
+    }
+
     public override SimpleNestedObject Deserialize(JsonParser p, DeserializeContext ctx)
     {
         p.GetObjectStart();
         var o = new SimpleNestedObject();
-
-
+        
         string name;
 
         while ((name = p.GetMemberName()) != null)
@@ -23,16 +27,24 @@ public class SimpleNestedObjectDeserializer : JsonDeserializer<SimpleNestedObjec
                     p.SkipMemberValue();
                     break;
                 case "numArr":
-                    var array = new List<int>();
-                    p.GetArrayStart();
-                    while (p.CurToken.TokenType != TokenType.RBRACKET)
+                    if (p.HasToken(TokenType.NULL))
                     {
-                        var el = Convert.ToInt32(p.GetNumber());
-                        array.Add(el);
+                        p.GetNull();
+                        o.subObj.subNum = 0;
                     }
+                    else
+                    {
+                        var array = new List<int>();
+                        p.GetArrayStart();
+                        while (!p.HasToken(TokenType.RBRACKET))
+                        {
+                            var el = Convert.ToInt32(p.GetNumber());
+                            array.Add(el);
+                        }
 
-                    p.GetArrayEnd();
-                    o.numArr = array;
+                        p.GetArrayEnd();
+                        o.numArr = array;
+                    }
                     break;
                 case "subObj":
                     p.GetObjectStart();
@@ -41,7 +53,12 @@ public class SimpleNestedObjectDeserializer : JsonDeserializer<SimpleNestedObjec
                         switch (name)
                         {
                             case "subNum":
-                                o.subObj.subNum = Convert.ToInt32(p.GetNumber());
+                                if (p.HasToken(TokenType.NULL))
+                                {
+                                    p.GetNull();
+                                    o.subObj.subNum = 0;
+                                }
+                                else o.subObj.subNum = Convert.ToInt32(p.GetNumber());
                                 break;
                             case "isObj":
                                 o.subObj.isObj = p.GetBool();

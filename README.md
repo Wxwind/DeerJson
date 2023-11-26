@@ -69,6 +69,8 @@ JsonMapper.Configure(JsonFeature f, bool enabled)
 
 - **DESERIALIZE_FAIL_ON_TRAILING_TOKENS**
 
+- **DESERIALIZE_FAIL_ON_NULL_FOR_PRIMITIVES**
+
 ## Attributes
 
 - **[JsonIgnore]**

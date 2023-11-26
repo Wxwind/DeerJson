@@ -34,7 +34,7 @@ public class DeserializeEnumTest
     }
 
     [Test]
-    public void EnumObj3()
+    public void EnumObjInvalidValue()
     {
         var json = """{"day":20000}""";
 

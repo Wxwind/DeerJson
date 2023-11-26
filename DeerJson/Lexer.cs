@@ -5,11 +5,13 @@ namespace DeerJson
 {
     public class Lexer
     {
-        private string m_inputStr = "";
+        private string m_inputStr;
         private char?  m_nowChar;
         private int    m_nowIndex = -1;
 
         public int CurLine { get; private set; } = 1;
+        public TokenType CurToken { get; private set; }
+        public string CurTokenValue { get; private set; }
 
 
         public Lexer(string inputStr)
@@ -26,43 +28,68 @@ namespace DeerJson
             MoveNext();
         }
 
-        public Token GetNextToken()
+        public void GetNextToken()
         {
-            if (m_nowChar == null) return new Token(TokenType.EOF);
+            if (m_nowChar == null)
+            {
+                CurToken = TokenType.NULL;
+                return;
+            }
+         
             SkipWhitespace();
 
-            if (TypeUtil.IsNumber(m_nowChar) || m_nowChar == '-') return ScanNumber();
+            if (TypeUtil.IsNumber(m_nowChar) || m_nowChar == '-')
+            {
+                ScanNumber();
+                return;
+            }
             switch (m_nowChar)
             {
-                case 't': return ScanKeyword("true", TokenType.TRUE);
-                case 'f': return ScanKeyword("false", TokenType.FALSE);
-                case 'n': return ScanKeyword("null", TokenType.NULL);
+                case 't':
+                    ScanKeyword("true", TokenType.TRUE);
+                    break;
+                case 'f':
+                    ScanKeyword("false", TokenType.FALSE);
+                    break;
+                case 'n':
+                    ScanKeyword("null", TokenType.NULL);
+                    break;
                 case '"':
-                    return ScanString();
+                    ScanString();
+                    break;
                 case '[':
                     MoveNext();
-                    return new Token(TokenType.LBRACKET);
+                    CurToken = TokenType.LBRACKET;
+                    break;
                 case ']':
                     MoveNext();
-                    return new Token(TokenType.RBRACKET);
+                    CurToken = TokenType.RBRACKET;
+                    break;
                 case '{':
                     MoveNext();
-                    return new Token(TokenType.LBRACE);
+                    CurToken = TokenType.LBRACE;
+                    break;
                 case '}':
                     MoveNext();
-                    return new Token(TokenType.RBRACE);
+                    CurToken = TokenType.RBRACE;
+                    break;
                 case ':':
                     MoveNext();
-                    return new Token(TokenType.COLON);
+                    CurToken = TokenType.COLON;
+                    break;
                 case ',':
                     MoveNext();
-                    return new Token(TokenType.COMMA);
+                    CurToken = TokenType.COMMA;
+                    break;
+                default:
+                    throw new Exception($"lexer: unresolved symbol '{m_nowChar}'");
+                    break;
             }
 
-            throw new Exception($"lexer: unresolved symbol '{m_nowChar}'");
+           
         }
-        
-        private Token ScanNumber()
+
+        private void ScanNumber()
         {
             var start = m_nowIndex;
             while (TypeUtil.IsNumber(m_nowChar)) MoveNext();
@@ -92,10 +119,11 @@ namespace DeerJson
 
             var end = m_nowIndex;
             var num = m_inputStr.Substring(start, end - start);
-            return new Token(TokenType.NUMBER, num);
+            CurToken = TokenType.NUMBER;
+            CurTokenValue = num;
         }
 
-        private Token ScanKeyword(string keyword, TokenType tokenType)
+        private void ScanKeyword(string keyword, TokenType tokenType)
         {
             var n = keyword.Length;
             if (m_nowIndex + n > m_inputStr.Length)
@@ -105,13 +133,15 @@ namespace DeerJson
             if (startStr == keyword)
             {
                 MoveNext(n);
-                return new Token(tokenType, keyword);
+                CurToken = tokenType;
+                CurTokenValue = keyword;
+                return;
             }
 
             throw new Exception($"lexer: unresolved symbol '{startStr}', are you mean '{keyword}'");
         }
 
-        private Token ScanString()
+        private void ScanString()
         {
             if (m_nowChar != '"') throw new Exception("string must begin with '\"' ");
             MoveNext();
@@ -141,7 +171,8 @@ namespace DeerJson
             MoveNext();
             var end = m_nowIndex;
             var str = m_inputStr.Substring(start, end - start - 1);
-            return new Token(TokenType.STRING, str);
+            CurToken = TokenType.STRING;
+            CurTokenValue = str;
         }
 
         private void MoveNext(int step = 1)
@@ -164,8 +195,6 @@ namespace DeerJson
 
                 MoveNext();
             }
-
-            ;
         }
     }
 }

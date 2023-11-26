@@ -59,5 +59,10 @@ namespace DeerJson.Deserializer.std
                 sp.SetDeserializer(desc);
             }
         }
+
+        public override object GetNullValue(DeserializeContext ctx)
+        {
+            return null;
+        }
     }
 }

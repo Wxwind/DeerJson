@@ -15,10 +15,10 @@ public class SerializeObjectTest
         m_jsonMapper.Configure(JsonFeature.SERIALIZE_ORDER_BY_NAME, true);
     }
 
-    [TestCase("PlainObj.json")]
-    public void PlainObj(string jsonName)
+    [Test]
+    public void PlainObj()
     {
-        var expected = ReadUtil.LoadJSON(jsonName).Replace("\n", "").Replace(" ", "").Replace("\t", "")
+        var expected = ReadUtil.LoadJSON("PlainObj.json").Replace("\n", "").Replace(" ", "").Replace("\t", "")
             .Replace("\r", "");
 
 

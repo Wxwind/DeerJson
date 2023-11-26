@@ -15,13 +15,18 @@ namespace DeerJson.Deserializer.std.Collection
             m_elementType = elementType;
         }
 
+        public override IList GetNullValue(DeserializeContext ctx)
+        {
+            return null;
+        }
+
         public override IList Deserialize(JsonParser p, DeserializeContext ctx)
         {
             var list = Activator.CreateInstance(m_type) as IList;
 
             p.GetArrayStart();
 
-            while (p.CurToken.TokenType != TokenType.RBRACKET)
+            while (p.CurToken != TokenType.RBRACKET)
             {
                 var el = m_elementDeserializer.Deserialize(p, ctx);
                 list.Add(el);

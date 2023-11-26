@@ -150,7 +150,11 @@ namespace DeerJson
         {
             VerifyValueWrite("write char");
             WriteRaw("\"");
-            WriteRaw(value.ToString());
+            if (value == '\0')
+            {
+                WriteRaw("\\u0000");
+            }
+            else WriteRaw(value.ToString());
             WriteRaw("\"");
         }
 

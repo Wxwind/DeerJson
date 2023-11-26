@@ -10,20 +10,25 @@ namespace DeerJson.Deserializer.std
             return ExecValue(p);
         }
 
+        public override JsonNode GetNullValue(DeserializeContext ctx)
+        {
+            return null;
+        }
+
         private JsonNode ExecValue(JsonParser p)
         {
-            switch (p.CurToken.TokenType)
+            switch (p.CurToken)
             {
                 case TokenType.STRING:
                 {
-                    var value = p.CurToken.Value;
+                    var value = p.CurTokenValue;
                     p.Match(TokenType.STRING);
                     return new StringNode(value);
                 }
 
                 case TokenType.NUMBER:
                 {
-                    var value = p.CurToken.Value;
+                    var value = p.CurTokenValue;
                     p.Match(TokenType.NUMBER);
                     return new NumericNode(value);
                 }
@@ -47,7 +52,7 @@ namespace DeerJson.Deserializer.std
                     return ExecObject(p);
 
                 default:
-                    ReportDetailError(p, $"{p.CurToken.TokenType} is illegal");
+                    ReportDetailError(p, $"{p.CurToken} is illegal");
                     return default;
             }
         }
@@ -78,7 +83,7 @@ namespace DeerJson.Deserializer.std
                 return node;
             }
 
-            ReportDetailError(p, $"missing ']' after {p.CurToken.Value}");
+            ReportDetailError(p, $"missing ']' after {p.CurTokenValue}");
             return default;
         }
 
@@ -111,13 +116,13 @@ namespace DeerJson.Deserializer.std
             }
 
 
-            ReportDetailError(p, $"missing '}}' after {p.CurToken.Value}");
+            ReportDetailError(p, $"missing '}}' after {p.CurTokenValue}");
             return default;
         }
 
         private (string, JsonNode) ExecPair(JsonParser p)
         {
-            var key = p.CurToken.Value;
+            var key = p.CurTokenValue;
             p.Match(TokenType.STRING);
             p.Match(TokenType.COLON);
             var value = ExecValue(p);

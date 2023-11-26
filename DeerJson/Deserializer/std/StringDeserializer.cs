@@ -12,5 +12,10 @@ namespace DeerJson.Deserializer.std
             var str = Convert.ToString(v);
             return str;
         }
+
+        public override string GetNullValue(DeserializeContext ctx)
+        {
+            return null;
+        }
     }
 }

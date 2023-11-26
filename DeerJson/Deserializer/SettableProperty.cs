@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using DeerJson.Deserializer.std;
 
 namespace DeerJson.Deserializer
 {
@@ -24,7 +23,22 @@ namespace DeerJson.Deserializer
 
         public void DeserializeAndSet(JsonParser p, object obj, DeserializeContext ctx)
         {
-            var v = m_valueDeserializer.Deserialize(p, ctx);
+            object v;
+            if (p.HasToken(TokenType.NULL))
+            {
+                if (Type.IsPrimitive && ctx.IsEnabled(JsonFeature.DESERIALIZE_FAIL_ON_NULL_FOR_PRIMITIVES))
+                {
+                    throw new JsonException(
+                        "cannot deserialize null for primitive type.(set DESERIALIZE_FAIL_ON_NULL_FOR_PRIMITIVES = true to allow)");
+                }
+
+                v = m_valueDeserializer.GetNullValue(ctx);
+                p.GetNull();
+            }
+            else
+            {
+                v = m_valueDeserializer.Deserialize(p, ctx);
+            }
             m_propInfo.SetValue(obj, v);
         }
     }

@@ -6,6 +6,11 @@ namespace DeerJson.Deserializer.std.Primitive
     {
         public static readonly DecimalDeserializer Instance = new DecimalDeserializer();
 
+        public override decimal GetNullValue(DeserializeContext ctx)
+        {
+            return 0;
+        }
+
         public override decimal Deserialize(JsonParser p, DeserializeContext ctx)
         {
             var v = p.GetNumber();
