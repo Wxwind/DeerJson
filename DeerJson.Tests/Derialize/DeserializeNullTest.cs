@@ -25,6 +25,26 @@ public class DeserializeNullTest
     }
 
     [Test]
+    public void Null1()
+    {
+        var json = "null";
+        var obj = m_jsonMapper.ParseJson<NullObj>(json);
+        NullObj expected = null;
+
+        obj.Should().BeEquivalentTo(expected);
+    }
+
+    [Test]
+    public void Null2()
+    {
+        var json = "null";
+        var obj = m_jsonMapper.ParseJson<int>(json);
+        var expected = 0;
+
+        obj.Should().Be(expected);
+    }
+
+    [Test]
     public void NullObj()
     {
         m_jsonMapper.Configure(JsonFeature.DESERIALIZE_FAIL_ON_NULL_FOR_PRIMITIVES, true);

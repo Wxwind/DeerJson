@@ -55,6 +55,10 @@ namespace DeerJson
         {
             var deser = m_deserializeContext.FindDeserializer(type);
             var p = new JsonParser(json);
+            if (p.CurToken == TokenType.NULL)
+            {
+                return deser.GetNullValue(m_deserializeContext);
+            }
             var res = deser.Deserialize(p, m_deserializeContext);
             if (m_configure.IsEnabled(JsonFeature.DESERIALIZE_FAIL_ON_TRAILING_TOKENS))
             {
