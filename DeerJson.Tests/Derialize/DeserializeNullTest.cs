@@ -65,4 +65,40 @@ public class DeserializeNullTest
 
         obj.Should().BeEquivalentTo(expected);
     }
+
+    [Test]
+    public void NullArray()
+    {
+        var json = """["a",null,"b"]""";
+        var arr = m_jsonMapper.ParseJson<string[]>(json);
+
+        var expected = new string[] { "a", null, "b" };
+
+        arr.Should().BeEquivalentTo(expected);
+    }
+
+    [Test]
+    public void NullList()
+    {
+        var json = """["a",null,"b"]""";
+        var arr = m_jsonMapper.ParseJson<List<string>>(json);
+
+        var expected = new string[] { "a", null, "b" };
+
+        arr.Should().BeEquivalentTo(expected);
+    }
+
+    [Test]
+    public void NullObjInArray()
+    {
+        var json = ReadUtil.LoadJSON("SimpleNestedObjectArrayWithNull.json").Replace("\n", "").Replace(" ", "");
+
+        var arr = m_jsonMapper.ParseJson<List<SimpleNestedObject>>(json);
+
+        var subObj = new SubObject(1, true);
+        var obj = new SimpleNestedObject("hello", new List<int> { 1, 2, 3 }, subObj);
+        var expected = new SimpleNestedObject[] { obj, null, obj };
+
+        arr.Should().BeEquivalentTo(expected);
+    }
 }

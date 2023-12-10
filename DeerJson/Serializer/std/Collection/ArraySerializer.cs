@@ -20,6 +20,11 @@ namespace DeerJson.Serializer.std.Collection
 
             foreach (var a in value)
             {
+                if (a == null)
+                {
+                    gen.WriteNull();
+                    continue;
+                }
                 m_elementSerializer.Serialize(a, gen, ctx);
             }
 

@@ -61,7 +61,7 @@
             }
 
             var propName = InternalGetMemberName();
-            Match(TokenType.COLON);
+            Match(TokenType.COLON); 
             return propName;
         }
 
@@ -114,7 +114,7 @@
             }
 
             Match(TokenType.RBRACE);
-            m_parserContext = m_parserContext.GetParentContext();
+            m_parserContext = m_parserContext.GetParentContext(0);
         }
 
         public void GetArrayStart()
@@ -133,7 +133,7 @@
             }
 
             Match(TokenType.RBRACKET);
-            m_parserContext = m_parserContext.GetParentContext();
+            m_parserContext = m_parserContext.GetParentContext(1);
         }
 
         private string InternalGetMemberName()
@@ -217,6 +217,39 @@
             if (HasToken(TokenType.NULL))
             {
                 Match(TokenType.NULL);
+            }
+        }
+
+        // return curToken, help to skip comma and colon (used only to handle with null value of array for now).
+        public TokenType GetNextToken()
+        {
+            // Get value after member name
+            if (m_parserContext.InObject() && m_parserContext.HasParsedName)
+            {
+                Match(TokenType.COLON);
+                return CurToken;
+            }
+            else
+            {
+                if (CurToken == TokenType.RBRACE || CurToken == TokenType.RBRACKET)
+                {
+                    return CurToken;
+                }
+
+                var t = CurToken;
+
+                if (m_parserContext.ExpectComma())
+                {
+                    Match(TokenType.COMMA);
+                    // TODO: feat: jsonfeature.allowtrailingcomma
+                    // if (t == TokenType.RBRACE||t == TokenType.RBRACKET)
+                    // {
+                    //     
+                    // }
+                    return CurToken;
+                }
+
+                return t;
             }
         }
 

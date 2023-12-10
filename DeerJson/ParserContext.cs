@@ -24,6 +24,7 @@
         private bool m_hasParsedName = false;
 
         public ContextType CurContextType { get; }
+        public bool HasParsedName => m_hasParsedName;
 
         public ParserContext()
         {
@@ -65,11 +66,16 @@
             {
                 var i = m_index;
                 m_index++;
-                return i == 0 ? Status.OK : Status.OK_NEED_COMMA;
+                return Status.OK;
             }
 
             m_index++;
             return Status.OK;
+        }
+
+        public bool ExpectComma()
+        {
+            return CurContextType != ContextType.NONE && m_index > 0;
         }
 
         public bool InArray()
@@ -92,9 +98,20 @@
             return new ParserContext(this, ContextType.OBJECT);
         }
 
-        public ParserContext GetParentContext()
+        // 0 - Object, 1 - Array
+        public ParserContext GetParentContext(int mode)
         {
-            return m_parent;
+            if (CurContextType == ContextType.OBJECT && mode == 0)
+            {
+                return m_parent;
+            }
+
+            if (CurContextType == ContextType.ARRAY && mode == 1)
+            {
+                return m_parent;
+            }
+
+            throw new JsonException("accident close of scope");
         }
     }
 }

@@ -26,9 +26,21 @@ namespace DeerJson.Deserializer.std.Collection
 
             p.GetArrayStart();
 
-            while (p.CurToken != TokenType.RBRACKET)
+            while (p.GetNextToken() != TokenType.RBRACKET)
             {
-                var el = m_elementDeserializer.Deserialize(p, ctx);
+                object el;
+                if (p.HasToken(TokenType.NULL))
+                {
+                    if (m_elementType.IsPrimitive && ctx.IsEnabled(JsonFeature.DESERIALIZE_FAIL_ON_NULL_FOR_PRIMITIVES))
+                    {
+                        throw new JsonException(
+                            "cannot deserialize null for primitive type.(set DESERIALIZE_FAIL_ON_NULL_FOR_PRIMITIVES = true to allow)");
+                    }
+
+                    el = m_elementDeserializer.GetNullValue(ctx);
+                    p.GetNull();
+                }
+                else el = m_elementDeserializer.Deserialize(p, ctx);
                 list.Add(el);
             }
 

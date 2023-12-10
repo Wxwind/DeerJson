@@ -36,7 +36,7 @@ public class SimpleNestedObjectDeserializer : JsonDeserializer<SimpleNestedObjec
                     {
                         var array = new List<int>();
                         p.GetArrayStart();
-                        while (!p.HasToken(TokenType.RBRACKET))
+                        while (p.GetNextToken() != TokenType.RBRACKET)
                         {
                             var el = Convert.ToInt32(p.GetNumber());
                             array.Add(el);

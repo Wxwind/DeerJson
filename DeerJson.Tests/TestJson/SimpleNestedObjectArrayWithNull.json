@@ -1,0 +1,27 @@
+﻿[
+  {
+    "numArr": [
+      1,
+      2,
+      3
+    ],
+    "str": "hello",
+    "subObj": {
+      "isObj": true,
+      "subNum": 1
+    }
+  },
+  null,
+  {
+    "numArr": [
+      1,
+      2,
+      3
+    ],
+    "str": "hello",
+    "subObj": {
+      "isObj": true,
+      "subNum": 1
+    }
+  }
+]
